@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPublish - Publicar Anúncio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/platforms-selection.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-car"></i> AutoPublish
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Criar Anúncio</a></li>
+                    <li><a href="ads-management.html">Meus Anúncios</a></li>
+                    <li><a href="#">Conta</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <h1 class="section-title">Publicar Anúncio</h1>
+
+        <div class="publish-container">
+            <div class="vehicle-summary">
+                <div class="vehicle-image">
+                    <img src="/api/placeholder/100/70" alt="Veículo">
+                </div>
+                <div class="vehicle-info">
+                    <h3>Honda Civic 2022</h3>
+                    <p>2.0 EXL CVT • 25.000 km • R$ 125.000,00</p>
+                </div>
+            </div>
+
+            <h2>Selecione as plataformas para publicação</h2>
+            <p>Escolha em quais sites você deseja publicar seu anúncio:</p>
+
+            <div class="platforms-container">
+                <div class="platform-card" onclick="toggleSelection(this)">
+                    <div class="platform-checkbox"><i class="fas fa-check"></i></div>
+                    <div class="platform-logo">
+                        <img src="/api/placeholder/120/60" alt="Webmotor">
+                    </div>
+                    <h3>Webmotor</h3>
+                    <p>Maior portal de veículos do Brasil</p>
+                    <div class="price">R$ 89,90 / 30 dias</div>
+                </div>
+
+                <div class="platform-card" onclick="toggleSelection(this)">
+                    <div class="platform-checkbox"><i class="fas fa-check"></i></div>
+                    <div class="platform-logo">
+                        <img src="/api/placeholder/120/60" alt="Só Carrão">
+                    </div>
+                    <h3>Só Carrão</h3>
+                    <p>Especializado em carros de luxo e esportivos</p>
+                    <div class="price">R$ 69,90 / 30 dias</div>
+                </div>
+
+                <div class="platform-card" onclick="toggleSelection(this)">
+                    <div class="platform-checkbox"><i class="fas fa-check"></i></div>
+                    <div class="platform-logo">
+                        <img src="/api/placeholder/120/60" alt="OLX">
+                    </div>
+                    <h3>OLX</h3>
+                    <p>Classificados gerais com grande alcance</p>
+                    <div class="price">R$ 49,90 / 30 dias</div>
+                </div>
+
+                <div class="platform-card" onclick="toggleSelection(this)">
+                    <div class="platform-checkbox"><i class="fas fa-check"></i></div>
+                    <div class="platform-logo">
+                        <img src="/api/placeholder/120/60" alt="Mercado Livre">
+                    </div>
+                    <h3>Mercado Livre</h3>
+                    <p>Marketplace com alto volume de vendas</p>
+                    <div class="price">R$ 59,90 / 30 dias</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="index.html" class="btn">Voltar</a>
+                <button class="btn btn-accent" onclick="publishAd()">Publicar Anúncio</button>
+            </div>
+
+            <div class="publication-status" id="publication-status">
+                <h2>Status da Publicação</h2>
+                <div class="status-container">
+                    <div class="status-header">
+                        <span>Plataforma</span>
+                        <span>Status</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="platform-name">
+                            <div class="platform-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span>Webmotor</span>
+                        </div>
+                        <div class="status">
+                            <div class="status-indicator pending"></div>
+                            <span>Processando...</span>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="platform-name">
+                            <div class="platform-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span>Só Carrão</span>
+                        </div>
+                        <div class="status">
+                            <div class="status-indicator published"></div>
+                            <span>Publicado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <a href="ads-management.html" class="btn btn-success">Ver Meus Anúncios</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 AutoPublish - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="static/js/platforms-selection.js"></script>
+    
+</body>
+</html>

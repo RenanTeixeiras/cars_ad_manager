@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPublish - Gerenciar Anúncios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/ads-management.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-car"></i> AutoPublish
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Criar Anúncio</a></li>
+                    <li><a href="ads-management.html" class="active">Meus Anúncios</a></li>
+                    <li><a href="#">Conta</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="dashboard-header">
+            <h1 class="section-title">Meus Anúncios</h1>
+            
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar anúncios...">
+                </div>
+                
+                <div class="filter-dropdown">
+                    <div class="filter-btn" onclick="toggleFilter()">
+                        <i class="fas fa-filter"></i>
+                        <span>Filtrar</span>
+                    </div>
+                    <div class="filter-dropdown-content" id="filter-dropdown">
+                        <a href="#" onclick="filterAds('all')">Todos os anúncios</a>
+                        <a href="#" onclick="filterAds('active')">Ativos</a>
+                        <a href="#" onclick="filterAds('pending')">Pendentes</a>
+                        <a href="#" onclick="filterAds('inactive')">Inativos</a>
+                    </div>
+                </div>
+                
+                <a href="index.html" class="btn btn-accent">
+                    <i class="fas fa-plus"></i> Novo Anúncio
+                </a>
+            </div>
+        </div>
+
+        <div class="ads-container">
+            <div class="ads-header">
+                <div>Veículo</div>
+                <div>Plataformas</div>
+                <div>Visualizações</div>
+                <div>Expira em</div>
+                <div>Ações</div>
+            </div>
+            
+            <div class="ad-item">
+                <div class="ad-info">
+                    <div class="ad-thumbnail">
+                        <img src="/api/placeholder/80/60" alt="Honda Civic">
+                    </div>
+                    <div class="ad-details">
+                        <h3>Honda Civic 2022</h3>
+                        <p>2.0 EXL CVT • R$ 125.000,00</p>
+                        <span class="status-badge status-active">Ativo</span>
+                    </div>
+                </div>
+                
+                <div class="ad-platforms">
+                    <div class="platform-icons">
+                        <div class="platform-icon" title="Webmotor">
+                            <i class="fas fa-w"></i>
+                        </div>
+                        <div class="platform-icon" title="Só Carrão">
+                            <i class="fas fa-s"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ad-views">
+                    <span>247 visualizações</span>
+                </div>
+                
+                <div class="ad-expiry">
+                    <span>27 dias</span>
+                </div>
+                
+                <div class="ad-actions">
+                    <div class="action-btn edit-btn" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="action-btn stats-btn" title="Estatísticas" onclick="openStatsModal()">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-btn delete-btn" title="Excluir" onclick="openDeleteModal()">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ad-item">
+                <div class="ad-info">
+                    <div class="ad-thumbnail">
+                        <img src="/api/placeholder/80/60" alt="Toyota Corolla">
+                    </div>
+                    <div class="ad-details">
+                        <h3>Toyota Corolla 2021</h3>
+                        <p>2.0 XEI • R$ 110.000,00</p>
+                        <span class="status-badge status-active">Ativo</span>
+                    </div>
+                </div>
+                
+                <div class="ad-platforms">
+                    <div class="platform-icons">
+                        <div class="platform-icon" title="Webmotor">
+                            <i class="fas fa-w"></i>
+                        </div>
+                        <div class="platform-icon" title="OLX">
+                            <i class="fas fa-o"></i>
+                        </div>
+                        <div class="platform-icon" title="Mercado Livre">
+                            <i class="fas fa-m"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ad-views">
+                    <span>183 visualizações</span>
+                </div>
+                
+                <div class="ad-expiry">
+                    <span>15 dias</span>
+                </div>
+                
+                <div class="ad-actions">
+                    <div class="action-btn edit-btn" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="action-btn stats-btn" title="Estatísticas" onclick="openStatsModal()">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-btn delete-btn" title="Excluir" onclick="openDeleteModal()">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ad-item">
+                <div class="ad-info">
+                    <div class="ad-thumbnail">
+                        <img src="/api/placeholder/80/60" alt="Volkswagen Golf">
+                    </div>
+                    <div class="ad-details">
+                        <h3>Volkswagen Golf 2020</h3>
+                        <p>1.4 TSI • R$ 95.000,00</p>
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                </div>
+                
+                <div class="ad-platforms">
+                    <div class="platform-icons">
+                        <div class="platform-icon" title="Só Carrão">
+                            <i class="fas fa-s"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ad-views">
+                    <span>0 visualizações</span>
+                </div>
+                
+                <div class="ad-expiry">
+                    <span>30 dias</span>
+                </div>
+                
+                <div class="ad-actions">
+                    <div class="action-btn edit-btn" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="action-btn stats-btn" title="Estatísticas" onclick="openStatsModal()">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-btn delete-btn" title="Excluir" onclick="openDeleteModal()">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ad-item">
+                <div class="ad-info">
+                    <div class="ad-thumbnail">
+                        <img src="/api/placeholder/80/60" alt="Hyundai HB20">
+                    </div>
+                    <div class="ad-details">
+                        <h3>Hyundai HB20 2023</h3>
+                        <p>1.0 Turbo • R$ 85.000,00</p>
+                        <span class="status-badge status-inactive">Inativo</span>
+                    </div>
+                </div>
+                
+                <div class="ad-platforms">
+                    <div class="platform-icons">
+                        <div class="platform-icon" title="Webmotor">
+                            <i class="fas fa-w"></i>
+                        </div>
+                        <div class="platform-icon" title="OLX">
+                            <i class="fas fa-o"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ad-views">
+                    <span>412 visualizações</span>
+                </div>
+                
+                <div class="ad-expiry">
+                    <span>Expirado</span>
+                </div>
+                
+                <div class="ad-actions">
+                    <div class="action-btn edit-btn" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="action-btn stats-btn" title="Estatísticas" onclick="openStatsModal()">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-btn delete-btn" title="Excluir" onclick="openDeleteModal()">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estado vazio (inicialmente oculto) -->
+            <div class="empty-state" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-car-side"></i>
+                </div>
+                <h3>Nenhum anúncio encontrado</h3>
+                <p>Você ainda não tem anúncios publicados. Clique no botão abaixo para criar seu primeiro anúncio.</p>
+                <a href="index.html" class="btn btn-accent">Criar Anúncio</a>
+            </div>
+        </div>
+        
+        <div class="pagination">
+            <div class="page-item active">1</div>
+            <div class="page-item">2</div>
+            <div class="page-item">3</div>
+            <div class="page-item">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="page-item">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="confirm-delete-modal" id="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>Excluir Anúncio</h3>
+            <p>Tem certeza que deseja excluir este anúncio? Esta ação não pode ser desfeita.</p>
+            <div class="delete-modal-buttons">
+                <button class="btn btn-outline" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-accent" onclick="deleteAd()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 AutoPublish - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="static/js/ads-management.js"></script>
+    
+</body>
+</html>
+    
+    <!-- Modal de Estatísticas -->
+    <div class="stats-modal" id="stats-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Estatísticas do Anúncio</div>
+                <button class="close-modal" onclick="closeStatsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Honda Civic 2022 • 2.0 EXL CVT</h3>
+                
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <p>Visualizações</p>
+                        <h3>247</h3>
+                        <p><span style="color: var(--success-color);">+12% </span>esta semana</p>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <p>Contatos</p>
+                        <h3>32</h3>
+                        <p><span style="color: var(--success-color);">+5% </span>esta semana</p>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <p>Favoritados</p>
+                        <h3>78</h3>
+                        <p><span style="color: var(--success-color);">+8% </span>esta semana</p>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <p>Taxa de Conversão</p>
+                        <h3>12.9%</h3>
+                        <p><span style="color: var(--accent-color);">-2% </span>esta semana</p>
+                    </div>
+                </div>
+                
+                <div class="stats-graph">
+                    <div style="text-align: center; color: #888;">
+                        <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Gráfico de visualizações ao longo do tempo</p>
+                    </div>
+                </div>
+                
+                <h4>Desempenho por Plataforma</h4>
+                <div class="platform-stats" style="margin-top: 15px;">
+                    <div style="background-color: var(--light-gray); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="platform-icon">
+                                    <i class="fas fa-w"></i>
+                                </div>
+                                <span>Webmotor</span>
+                            </div>
+                            <div>156 visualizações</div>
+                        </div>
+                        <div style="height: 8px; background-color: #ddd; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; width: 63%; background-color: var(--primary-color);"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: var(--light-gray); border-radius: 8px; padding: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="platform-icon">
+                                    <i class="fas fa-s"></i>
+                                </div>
+                                <span>Só Carrão</span>
+                            </div>
+                            <div>91 visualizações</div>
+                        </div>
+                        <div style="height: 8px; background-color: #ddd; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; width: 37%; background-color: var(--primary-color);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
