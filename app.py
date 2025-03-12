@@ -24,7 +24,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/')
 def index():
     """Página inicial com formulário para criar anúncio"""
-    return render_template('index.html')
+    # Buscar todos os veículos no banco de dados
+    veiculos = list(mongo.db.veiculo.find())
+    print(veiculos)
+    return render_template('index.html', veiculos=veiculos)
 
 @app.route('/criar-anuncio', methods=['POST'])
 def criar_anuncio():
@@ -40,6 +43,7 @@ def criar_anuncio():
             'preco': float(request.form.get('preco')),
             'descricao': request.form.get('descricao'),
             'data_criacao': datetime.now(),
+            
             'status': 'rascunho',  # inicialmente como rascunho
             'visualizacoes': 0,
             'contatos': 0,

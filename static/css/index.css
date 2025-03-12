@@ -15,6 +15,29 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Estilo específico para o select de veículos */
+#veiculo {
+    background-color: var(--light-gray);
+    font-weight: 500;
+    padding: 14px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Estilo específico para o select de veículos */
+#veiculo {
+    background-color: var(--light-gray);
+    font-weight: 500;
+    padding: 14px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--primary-color);
+}
+
 body {
     background-color: #f8f9fa;
     color: var(--text-color);

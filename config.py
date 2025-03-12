@@ -6,7 +6,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'chave-secreta-padrao'
     
     # Configurações MongoDB
-    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://admin:admin123@localhost:27017/admin?authSource=admin'
+    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://admin:admin123@localhost:27017/SistemaVeiculosV3?authSource=admin'
     
     # Configurações de upload
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Limite de 16MB para upload
