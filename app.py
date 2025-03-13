@@ -52,6 +52,95 @@ def get_veiculo(veiculo_id):
         
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
+    
+@app.route('/salvar_anuncio', methods=['POST'])
+def salvar_anuncio():
+    """API para salvar um anúncio no banco de dados"""
+    try:
+        # Obter dados do formulário
+        dados = request.form.to_dict()
+        
+        # Processar a ação (publicar ou rascunho)
+        acao = dados.pop('acao', 'rascunho')
+        
+        # Verificar se há arquivos enviados (imagens)
+        imagens = []
+        if 'imagens' in request.files:
+            arquivos = request.files.getlist('imagens')
+            for arquivo in arquivos:
+                if arquivo and arquivo.filename:
+                    nome_arquivo = secure_filename(arquivo.filename)
+                    
+                    # Gerar um nome único para evitar conflitos
+                    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                    nome_unico = f"{timestamp}_{nome_arquivo}"
+                    
+                    # Salvar o arquivo
+                    caminho_completo = os.path.join(UPLOAD_FOLDER, nome_unico)
+                    arquivo.save(caminho_completo)
+                    
+                    # Adicionar o caminho relativo à lista de imagens
+                    imagens.append(f"/static/uploads/{nome_unico}")
+        
+        # Criar o documento de anúncio
+        anuncio = {
+            'marca': dados.get('marca', ''),
+            'modelo': dados.get('modelo', ''),
+            'ano': int(dados.get('ano', 0)),
+            'versao': dados.get('versao', ''),
+            'km': int(dados.get('km', 0)),
+            'preco': float(dados.get('preco', 0)),
+            'descricao': dados.get('descricao', ''),
+            'imagens': imagens,
+            'status': 'publicado' if acao == 'publicar' else 'rascunho',
+            'data_criacao': datetime.now(),
+            'veiculo_id': ObjectId(dados.get('veiculo', '')) if dados.get('veiculo') else None
+        }
+        
+        # Inserir no banco de dados
+        resultado = mongo.db.anuncios.insert_one(anuncio)
+        
+        # Retornar sucesso com o ID do anúncio criado
+        return jsonify({
+            'sucesso': True,
+            'mensagem': 'Anúncio salvo com sucesso!',
+            'anuncio_id': str(resultado.inserted_id),
+            'status': anuncio['status']
+        })
+        
+    except Exception as e:
+        # Retornar erro
+        return jsonify({
+            'sucesso': False,
+            'mensagem': f'Erro ao salvar anúncio: {str(e)}'
+        }), 500
+
+@app.route('/anuncios')
+def listar_anuncios():
+    """Página para gerenciar anúncios"""
+    status = request.args.get('status', '')
+    
+    # Filtrar anúncios por status, se especificado
+    query = {}
+    if status in ['publicado', 'rascunho']:
+        query['status'] = status
+    
+    # Buscar anúncios no banco de dados
+    anuncios = list(mongo.db.anuncios.find(query).sort('data_criacao', -1))
+    
+    # Converter ObjectId para string para cada anúncio
+    for anuncio in anuncios:
+        anuncio['_id'] = str(anuncio['_id'])
+        if anuncio.get('veiculo_id'):
+            anuncio['veiculo_id'] = str(anuncio['veiculo_id'])
+    
+    # Verificar o formato de retorno
+    if request.headers.get('Accept') == 'application/json':
+        # Se o cliente solicitar JSON, retornar como API
+        return jsonify(anuncios)
+    
+    # Caso contrário, renderizar uma página simples
+    return render_template('anuncios.html', anuncios=anuncios, status_filtro=status)
 
 
 # Iniciar aplicação

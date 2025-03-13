@@ -15,6 +15,33 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+
+/* Estilo para campos inválidos */
+.form-control.invalido {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.25);
+}
+
+.form-control.invalido:focus {
+    border-color: var(--accent-color);
+}
+
+/* Melhorar a exibição da mensagem de sucesso */
+.success-message {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: var(--success-color);
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+    display: none;
+    font-weight: 500;
+}
+
+.success-message i {
+    margin-right: 8px;
+}
+
 .form-control:focus {
     outline: none;
     border-color: var(--primary-color);
