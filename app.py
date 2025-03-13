@@ -4,6 +4,9 @@ from bson.objectid import ObjectId
 import os
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+# from passlib.context import CryptContext
+# from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 import json
 
 # Importar configurações
@@ -20,9 +23,11 @@ mongo = PyMongo(app)
 UPLOAD_FOLDER = os.path.join(app.static_folder, 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Rotas
+
+
+
 @app.route('/')
-def index():
+def page_criar_anuncio():
     """Página inicial com formulário para criar anúncio"""
     # Buscar todos os veículos no banco de dados
     veiculos = list(mongo.db.veiculo.find())
