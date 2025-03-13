@@ -26,8 +26,27 @@ def index():
     """Página inicial com formulário para criar anúncio"""
     # Buscar todos os veículos no banco de dados
     veiculos = list(mongo.db.veiculo.find())
-    print(veiculos)
     return render_template('index.html', veiculos=veiculos)
+
+@app.route('/veiculo/<veiculo_id>')
+def get_veiculo(veiculo_id):
+    """API para obter detalhes de um veículo específico"""
+    try:
+        # Buscar o veículo no banco de dados usando o ObjectId
+        veiculo = mongo.db.veiculo.find_one({'_id': ObjectId(veiculo_id)})
+        
+        if not veiculo:
+            return jsonify({'erro': 'Veículo não encontrado'}), 404
+            
+        # Converter ObjectId para string para serialização JSON
+        veiculo['_id'] = str(veiculo['_id'])
+        veiculo['ano'] = veiculo['ano_modelo']
+        # Retornar os dados do veículo
+        print(veiculo)
+        return jsonify(veiculo)
+        
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 @app.route('/criar-anuncio', methods=['POST'])
 def criar_anuncio():

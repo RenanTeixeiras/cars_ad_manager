@@ -66,31 +66,8 @@
                 </div>
             </div>
             <form id="vehicle-form">
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label for="marca">Marca</label>
-                            <select class="form-control" id="marca" required>
-                                <option value="">Selecione a marca</option>
-                                <option value="chevrolet">Chevrolet</option>
-                                <option value="fiat">Fiat</option>
-                                <option value="ford">Ford</option>
-                                <option value="honda">Honda</option>
-                                <option value="hyundai">Hyundai</option>
-                                <option value="toyota">Toyota</option>
-                                <option value="volkswagen">Volkswagen</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label for="modelo">Modelo</label>
-                            <select class="form-control" id="modelo" required>
-                                <option value="">Selecione o modelo</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                
+                
 
                 <div class="form-row">
                     <div class="form-col">
@@ -153,6 +130,12 @@
         <p>&copy; 2025 AutoPublish - Todos os direitos reservados</p>
     </footer>
 
-    <script src="static/js/index.js"></script>
+
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+    <script>
+        
+    </script>
 </body>
 </html>
