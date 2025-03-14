@@ -262,6 +262,81 @@
                     <div class="preview-container" id="preview-container"></div>
                 </div>
 
+
+                <!-- Adicionar logo após o campo de imagens e antes dos botões de ação -->
+<div class="form-group">
+    <h3 class="section-title"><i class="fas fa-share-alt"></i> Plataformas de Anúncio</h3>
+    <p class="plataformas-descricao">Selecione as plataformas onde deseja publicar seu anúncio:</p>
+    
+    <div class="plataformas-container">
+        <div class="plataforma-item">
+            <input type="checkbox" id="webmotors" class="plataforma-check" checked>
+            <label for="webmotors" class="plataforma-label">
+                <img src="/static/images/logos/webmotors.png" alt="Webmotors" class="plataforma-logo">
+                <div class="plataforma-info">
+                    <span class="plataforma-nome">Webmotors</span>
+                    <span class="plataforma-preco">R$ 89,90 / 30 dias</span>
+                </div>
+            </label>
+        </div>
+        
+        <div class="plataforma-item">
+            <input type="checkbox" id="socarrao" class="plataforma-check">
+            <label for="socarrao" class="plataforma-label">
+                <img src="/static/images/logos/socarrao.png" alt="Só Carrão" class="plataforma-logo">
+                <div class="plataforma-info">
+                    <span class="plataforma-nome">Só Carrão</span>
+                    <span class="plataforma-preco">R$ 69,90 / 30 dias</span>
+                </div>
+            </label>
+        </div>
+        
+        <div class="plataforma-item">
+            <input type="checkbox" id="olx" class="plataforma-check">
+            <label for="olx" class="plataforma-label">
+                <img src="/static/images/logos/olx.png" alt="OLX" class="plataforma-logo">
+                <div class="plataforma-info">
+                    <span class="plataforma-nome">OLX</span>
+                    <span class="plataforma-preco">R$ 59,90 / 30 dias</span>
+                </div>
+            </label>
+        </div>
+        
+        <div class="plataforma-item">
+            <input type="checkbox" id="mercadolivre" class="plataforma-check">
+            <label for="mercadolivre" class="plataforma-label">
+                <img src="/static/images/logos/mercadolivre.png" alt="Mercado Livre" class="plataforma-logo">
+                <div class="plataforma-info">
+                    <span class="plataforma-nome">Mercado Livre</span>
+                    <span class="plataforma-preco">R$ 79,90 / 30 dias</span>
+                </div>
+            </label>
+        </div>
+        
+        <div class="plataforma-item">
+            <input type="checkbox" id="icarros" class="plataforma-check">
+            <label for="icarros" class="plataforma-label">
+                <img src="/static/images/logos/icarros.png" alt="iCarros" class="plataforma-logo">
+                <div class="plataforma-info">
+                    <span class="plataforma-nome">iCarros</span>
+                    <span class="plataforma-preco">R$ 74,90 / 30 dias</span>
+                </div>
+            </label>
+        </div>
+    </div>
+    
+    <div class="plataformas-resumo">
+        <div class="plataformas-total">
+            <span>Total estimado: </span>
+            <span id="plataformas-valor-total">R$ 89,90</span>
+        </div>
+        <div class="plataformas-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Os valores serão cobrados somente após a publicação do anúncio</span>
+        </div>
+    </div>
+</div>
+
                 <div class="action-buttons">
                     <button type="button" class="btn" id="salvar">Salvar como rascunho</button>
                     <button type="submit" class="btn btn-accent" id="publicar">Publicar Anúncio</button>

@@ -71,6 +71,14 @@ def salvar_anuncio():
             except:
                 opcionais = []
         
+        # Processar plataformas selecionadas (vem como JSON string)
+        plataformas_selecionadas = []
+        if 'plataformas' in dados:
+            try:
+                plataformas_selecionadas = json.loads(dados.pop('plataformas'))
+            except:
+                plataformas_selecionadas = []
+        
         # Verificar se há arquivos enviados (imagens)
         imagens = []
         if 'imagens' in request.files:
@@ -113,18 +121,50 @@ def salvar_anuncio():
             'imagens': imagens,
             'status': 'publicado' if acao == 'publicar' else 'rascunho',
             'data_criacao': datetime.now(),
-            'veiculo_id': ObjectId(dados.get('veiculo', '')) if dados.get('veiculo') else None
+            'veiculo_id': ObjectId(dados.get('veiculo', '')) if dados.get('veiculo') else None,
+            'plataformas_selecionadas': plataformas_selecionadas
         }
         
         # Inserir no banco de dados
         resultado = mongo.db.anuncios.insert_one(anuncio)
+        
+        # Se for publicar e houver plataformas selecionadas, criar registros de publicação
+        if acao == 'publicar' and plataformas_selecionadas:
+            # Buscar informações das plataformas selecionadas no banco de dados
+            plataformas_info = list(mongo.db.plataformas.find({"slug": {"$in": plataformas_selecionadas}}))
+            
+            # Criar registros de publicação para cada plataforma
+            publicacoes = []
+            for plataforma in plataformas_info:
+                publicacao = {
+                    'anuncio_id': resultado.inserted_id,
+                    'plataforma_id': plataforma['_id'],
+                    'plataforma_nome': plataforma['nome'],
+                    'plataforma_slug': plataforma['slug'],
+                    'status': 'pendente',
+                    'data_criacao': datetime.now(),
+                    'preco': plataforma.get('preco_30dias', 0),
+                    'expiracao': datetime.now() + timedelta(days=30)
+                }
+                publicacoes.append(publicacao)
+            
+            # Inserir as publicações no banco de dados se houver
+            if publicacoes:
+                mongo.db.publicacoes.insert_many(publicacoes)
+                
+                # Atualizar o anúncio com a referência às publicações
+                mongo.db.anuncios.update_one(
+                    {'_id': resultado.inserted_id},
+                    {'$set': {'publicacoes_ids': [p['_id'] for p in publicacoes]}}
+                )
         
         # Retornar sucesso com o ID do anúncio criado
         return jsonify({
             'sucesso': True,
             'mensagem': 'Anúncio salvo com sucesso!',
             'anuncio_id': str(resultado.inserted_id),
-            'status': anuncio['status']
+            'status': anuncio['status'],
+            'plataformas': plataformas_selecionadas
         })
         
     except Exception as e:
@@ -204,6 +244,14 @@ def atualizar_anuncio(anuncio_id):
             except:
                 opcionais = []
         
+        # Processar plataformas selecionadas
+        plataformas_selecionadas = []
+        if 'plataformas' in dados:
+            try:
+                plataformas_selecionadas = json.loads(dados.pop('plataformas'))
+            except:
+                plataformas_selecionadas = []
+        
         # Verificar se há novas imagens enviadas
         novas_imagens = []
         if 'novas_imagens' in request.files:
@@ -251,8 +299,17 @@ def atualizar_anuncio(anuncio_id):
             'final_placa': dados.get('final_placa', ''),
             'informacoes_adicionais': dados.get('informacoes_adicionais', ''),
             'opcionais': opcionais,
+            'plataformas_selecionadas': plataformas_selecionadas,
             'data_atualizacao': datetime.now()
         }
+        
+        # Buscar o anúncio atual para comparar as plataformas
+        anuncio_atual = mongo.db.anuncios.find_one({'_id': ObjectId(anuncio_id)})
+        plataformas_anteriores = anuncio_atual.get('plataformas_selecionadas', []) if anuncio_atual else []
+        
+        # Verificar mudanças nas plataformas
+        plataformas_adicionadas = [p for p in plataformas_selecionadas if p not in plataformas_anteriores]
+        plataformas_removidas = [p for p in plataformas_anteriores if p not in plataformas_selecionadas]
         
         # Atualizar no banco de dados
         resultado = mongo.db.anuncios.update_one(
@@ -260,11 +317,54 @@ def atualizar_anuncio(anuncio_id):
             {'$set': atualizacao}
         )
         
+        # Se o anúncio está publicado, atualizar as publicações
+        if anuncio_atual and anuncio_atual.get('status') == 'publicado':
+            # Remover publicações para plataformas removidas
+            if plataformas_removidas:
+                mongo.db.publicacoes.delete_many({
+                    'anuncio_id': ObjectId(anuncio_id),
+                    'plataforma_slug': {'$in': plataformas_removidas}
+                })
+            
+            # Adicionar publicações para novas plataformas
+            if plataformas_adicionadas:
+                plataformas_info = list(mongo.db.plataformas.find({"slug": {"$in": plataformas_adicionadas}}))
+                
+                novas_publicacoes = []
+                for plataforma in plataformas_info:
+                    publicacao = {
+                        'anuncio_id': ObjectId(anuncio_id),
+                        'plataforma_id': plataforma['_id'],
+                        'plataforma_nome': plataforma['nome'],
+                        'plataforma_slug': plataforma['slug'],
+                        'status': 'pendente',
+                        'data_criacao': datetime.now(),
+                        'preco': plataforma.get('preco_30dias', 0),
+                        'expiracao': datetime.now() + timedelta(days=30)
+                    }
+                    novas_publicacoes.append(publicacao)
+                
+                if novas_publicacoes:
+                    # Inserir as novas publicações
+                    resultado_publicacoes = mongo.db.publicacoes.insert_many(novas_publicacoes)
+                    
+                    # Atualizar o anúncio com as novas publicações
+                    nova_publicacoes_ids = [p for p in resultado_publicacoes.inserted_ids]
+                    publicacoes_anteriores = anuncio_atual.get('publicacoes_ids', []) if anuncio_atual else []
+                    
+                    todas_publicacoes = publicacoes_anteriores + nova_publicacoes_ids
+                    
+                    mongo.db.anuncios.update_one(
+                        {'_id': ObjectId(anuncio_id)},
+                        {'$set': {'publicacoes_ids': todas_publicacoes}}
+                    )
+        
         if resultado.modified_count > 0:
             return jsonify({
                 'sucesso': True,
                 'mensagem': 'Anúncio atualizado com sucesso!',
-                'anuncio_id': anuncio_id
+                'anuncio_id': anuncio_id,
+                'plataformas': plataformas_selecionadas
             })
         else:
             return jsonify({

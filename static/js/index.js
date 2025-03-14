@@ -233,6 +233,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ================ FUNÇÃO PARA CALCULAR TOTAL DE PLATAFORMAS ================
+    // Função para calcular o total das plataformas selecionadas
+    function calcularTotalPlataformas() {
+        const plataformas = [
+            { id: 'webmotors', preco: 89.90 },
+            { id: 'socarrao', preco: 69.90 },
+            { id: 'olx', preco: 59.90 },
+            { id: 'mercadolivre', preco: 79.90 },
+            { id: 'icarros', preco: 74.90 }
+        ];
+        
+        let total = 0;
+        const plataformasSelecionadas = [];
+        
+        plataformas.forEach(plataforma => {
+            const checkbox = document.getElementById(plataforma.id);
+            if (checkbox && checkbox.checked) {
+                total += plataforma.preco;
+                plataformasSelecionadas.push(plataforma.id);
+            }
+        });
+        
+        // Atualizar o valor total exibido
+        const totalElement = document.getElementById('plataformas-valor-total');
+        if (totalElement) {
+            totalElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+        
+        return {
+            total,
+            plataformasSelecionadas
+        };
+    }
+
+    // Inicializar eventos das plataformas
+    const plataformasIds = ['webmotors', 'socarrao', 'olx', 'mercadolivre', 'icarros'];
+    
+    plataformasIds.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.addEventListener('change', calcularTotalPlataformas);
+        }
+    });
+    
+    // Inicializar o cálculo total das plataformas
+    calcularTotalPlataformas();
+
     // ================ NOVO CÓDIGO - BOTÃO PUBLICAR ================
     // Configuração do botão publicar com ajustes para salvar no MongoDB
     if (publishBtn) {
@@ -243,6 +290,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('vehicle-form');
             if (!form) {
                 console.error("Formulário não encontrado!");
+                return;
+            }
+            
+            // Verificar se alguma plataforma foi selecionada
+            const { plataformasSelecionadas } = calcularTotalPlataformas();
+            
+            if (plataformasSelecionadas.length === 0) {
+                alert('Por favor, selecione pelo menos uma plataforma para publicar o anúncio.');
                 return;
             }
             
@@ -275,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Criar FormData para enviar o formulário incluindo imagens
             const formData = new FormData();
             
-            // Adicionar os valores dos campos ao FormDat
+            // Adicionar os valores dos campos ao FormData
             formData.append('marca', document.getElementById('marca').value);
             formData.append('modelo', document.getElementById('modelo').value);
             formData.append('ano', document.getElementById('ano').value);
@@ -283,43 +338,42 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('km', document.getElementById('km').value);
             formData.append('preco', document.getElementById('preco').value);
             formData.append('descricao', document.getElementById('descricao').value);
-            // Dentro do evento do botão publicar (publishBtn.addEventListener('click', function(e) {...})
-// Logo após onde adiciona o campo descricao ao formData
+            
+            // Adicionar campos da ficha técnica
+            formData.append('combustivel', document.getElementById('combustivel') ? document.getElementById('combustivel').value : '');
+            formData.append('cambio', document.getElementById('cambio') ? document.getElementById('cambio').value : '');
+            formData.append('cor', document.getElementById('cor') ? document.getElementById('cor').value : '');
+            formData.append('portas', document.getElementById('portas') ? document.getElementById('portas').value : '');
+            formData.append('motor', document.getElementById('motor') ? document.getElementById('motor').value : '');
+            formData.append('potencia', document.getElementById('potencia') ? document.getElementById('potencia').value : '');
+            formData.append('direcao', document.getElementById('direcao') ? document.getElementById('direcao').value : '');
+            formData.append('final_placa', document.getElementById('final-placa') ? document.getElementById('final-placa').value : '');
+            formData.append('informacoes_adicionais', document.getElementById('informacoes-adicionais') ? document.getElementById('informacoes-adicionais').value : '');
 
-// Adicionar campos da ficha técnica
-formData.append('combustivel', document.getElementById('combustivel') ? document.getElementById('combustivel').value : '');
-formData.append('cambio', document.getElementById('cambio') ? document.getElementById('cambio').value : '');
-formData.append('cor', document.getElementById('cor') ? document.getElementById('cor').value : '');
-formData.append('portas', document.getElementById('portas') ? document.getElementById('portas').value : '');
-formData.append('motor', document.getElementById('motor') ? document.getElementById('motor').value : '');
-formData.append('potencia', document.getElementById('potencia') ? document.getElementById('potencia').value : '');
-formData.append('direcao', document.getElementById('direcao') ? document.getElementById('direcao').value : '');
-formData.append('final_placa', document.getElementById('final-placa') ? document.getElementById('final-placa').value : '');
-formData.append('informacoes_adicionais', document.getElementById('informacoes-adicionais') ? document.getElementById('informacoes-adicionais').value : '');
+            // Coletar opcionais marcados
+            const opcionais = [];
+            const checkboxesIds = [
+                'ar-condicionado', 'vidros-eletricos', 'travas-eletricas',
+                'alarme', 'som', 'sensor-re', 'camera-re',
+                'airbag', 'abs', 'couro', 'teto-solar', 'multimidia'
+            ];
 
-// Coletar opcionais marcados
-const opcionais = [];
-const checkboxesIds = [
-    'ar-condicionado', 'vidros-eletricos', 'travas-eletricas',
-    'alarme', 'som', 'sensor-re', 'camera-re',
-    'airbag', 'abs', 'couro', 'teto-solar', 'multimidia'
-];
+            checkboxesIds.forEach(id => {
+                const checkbox = document.getElementById(id);
+                if (checkbox && checkbox.checked) {
+                    // Converter id (ex: 'ar-condicionado') para nome legível (ex: 'Ar Condicionado')
+                    const nome = id.split('-')
+                            .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                            .join(' ');
+                    opcionais.push(nome);
+                }
+            });
 
-checkboxesIds.forEach(id => {
-    const checkbox = document.getElementById(id);
-    if (checkbox && checkbox.checked) {
-        // Converter id (ex: 'ar-condicionado') para nome legível (ex: 'Ar Condicionado')
-        const nome = id.split('-')
-                       .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
-                       .join(' ');
-        opcionais.push(nome);
-    }
-});
-
-// Adicionar opcionais como JSON string
-formData.append('opcionais', JSON.stringify(opcionais));
-
-// Depois, continue com o código existente...
+            // Adicionar opcionais como JSON string
+            formData.append('opcionais', JSON.stringify(opcionais));
+            
+            // Adicionar plataformas selecionadas como JSON string
+            formData.append('plataformas', JSON.stringify(plataformasSelecionadas));
             
             // Adicionar o ID do veículo, se selecionado
             const veiculoSelect = document.getElementById('veiculo');
@@ -414,6 +468,41 @@ formData.append('opcionais', JSON.stringify(opcionais));
             formData.append('km', document.getElementById('km').value || '0');
             formData.append('preco', document.getElementById('preco').value || '0');
             formData.append('descricao', document.getElementById('descricao').value || '');
+            
+            // Adicionar campos da ficha técnica para o rascunho
+            formData.append('combustivel', document.getElementById('combustivel') ? document.getElementById('combustivel').value : '');
+            formData.append('cambio', document.getElementById('cambio') ? document.getElementById('cambio').value : '');
+            formData.append('cor', document.getElementById('cor') ? document.getElementById('cor').value : '');
+            formData.append('portas', document.getElementById('portas') ? document.getElementById('portas').value : '');
+            formData.append('motor', document.getElementById('motor') ? document.getElementById('motor').value : '');
+            formData.append('potencia', document.getElementById('potencia') ? document.getElementById('potencia').value : '');
+            formData.append('direcao', document.getElementById('direcao') ? document.getElementById('direcao').value : '');
+            formData.append('final_placa', document.getElementById('final-placa') ? document.getElementById('final-placa').value : '');
+            formData.append('informacoes_adicionais', document.getElementById('informacoes-adicionais') ? document.getElementById('informacoes-adicionais').value : '');
+            
+            // Coletar opcionais marcados para o rascunho
+            const opcionais = [];
+            const checkboxesIds = [
+                'ar-condicionado', 'vidros-eletricos', 'travas-eletricas',
+                'alarme', 'som', 'sensor-re', 'camera-re',
+                'airbag', 'abs', 'couro', 'teto-solar', 'multimidia'
+            ];
+            
+            checkboxesIds.forEach(id => {
+                const checkbox = document.getElementById(id);
+                if (checkbox && checkbox.checked) {
+                    const nome = id.split('-')
+                           .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                           .join(' ');
+                    opcionais.push(nome);
+                }
+            });
+            
+            formData.append('opcionais', JSON.stringify(opcionais));
+            
+            // Adicionar plataformas selecionadas também para o rascunho
+            const { plataformasSelecionadas } = calcularTotalPlataformas();
+            formData.append('plataformas', JSON.stringify(plataformasSelecionadas));
             
             // Adicionar o ID do veículo, se selecionado
             const veiculoSelect = document.getElementById('veiculo');
