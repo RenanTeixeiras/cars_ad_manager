@@ -565,7 +565,9 @@
                                         {% for plataforma in anuncio.plataformas_selecionadas %}
                                             <div class="plataforma-badge plataforma-badge-{{ plataforma }}">
                                                 <span class="plataforma-badge-name">{{ plataforma|capitalize }}</span>
-                                    
+                                                {% if anuncio.precos_plataformas and plataforma in anuncio.precos_plataformas %}
+                                                    <span class="plataforma-badge-preco">R$ {{ "%.2f"|format(anuncio.precos_plataformas[plataforma])|replace(".", ",") }}</span>
+                                                {% endif %}
                                             </div>
                                         {% endfor %}
                                     </div>
@@ -898,6 +900,85 @@
 
 <!-- Adicione este CSS ao seu bloco de estilo -->
 <style>
+
+.plataforma-badge {
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #eee;
+    font-size: 0.75rem;
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    gap: 6px;
+}
+
+.plataforma-badge-name {
+    font-weight: 500;
+}
+
+.plataforma-badge-preco {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Estilos específicos para cada plataforma */
+.plataforma-badge-webmotors {
+    background-color: rgba(224, 30, 38, 0.1);
+    border-color: rgba(224, 30, 38, 0.3);
+    color: #c01a21;
+}
+
+.plataforma-badge-webmotors .plataforma-badge-preco {
+    background-color: rgba(224, 30, 38, 0.15);
+}
+
+.plataforma-badge-socarrao {
+    background-color: rgba(0, 123, 255, 0.1);
+    border-color: rgba(0, 123, 255, 0.3);
+    color: #0056b3;
+}
+
+.plataforma-badge-socarrao .plataforma-badge-preco {
+    background-color: rgba(0, 123, 255, 0.15);
+}
+
+.plataforma-badge-olx {
+    background-color: rgba(116, 0, 184, 0.1);
+    border-color: rgba(116, 0, 184, 0.3);
+    color: #6200a0;
+}
+
+.plataforma-badge-olx .plataforma-badge-preco {
+    background-color: rgba(116, 0, 184, 0.15);
+}
+
+.plataforma-badge-mercadolivre {
+    background-color: rgba(255, 223, 0, 0.1);
+    border-color: rgba(255, 223, 0, 0.3);
+    color: #a49500;
+}
+
+.plataforma-badge-mercadolivre .plataforma-badge-preco {
+    background-color: rgba(255, 223, 0, 0.3);
+    color: #706600;
+}
+
+.plataforma-badge-icarros {
+    background-color: rgba(249, 125, 1, 0.1);
+    border-color: rgba(249, 125, 1, 0.3);
+    color: #c25600;
+}
+
+.plataforma-badge-icarros .plataforma-badge-preco {
+    background-color: rgba(249, 125, 1, 0.15);
+}   
 .plataformas-logos-container {
     display: flex;
     flex-wrap: wrap;

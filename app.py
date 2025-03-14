@@ -79,6 +79,14 @@ def salvar_anuncio():
             except:
                 plataformas_selecionadas = []
         
+        # Processar preços personalizados das plataformas (vem como JSON string)
+        precos_plataformas = {}
+        if 'precos_plataformas' in dados:
+            try:
+                precos_plataformas = json.loads(dados.pop('precos_plataformas'))
+            except:
+                precos_plataformas = {}
+        
         # Verificar se há arquivos enviados (imagens)
         imagens = []
         if 'imagens' in request.files:
@@ -122,7 +130,8 @@ def salvar_anuncio():
             'status': 'publicado' if acao == 'publicar' else 'rascunho',
             'data_criacao': datetime.now(),
             'veiculo_id': ObjectId(dados.get('veiculo', '')) if dados.get('veiculo') else None,
-            'plataformas_selecionadas': plataformas_selecionadas
+            'plataformas_selecionadas': plataformas_selecionadas,
+            'precos_plataformas': precos_plataformas  # Salvar os preços personalizados
         }
         
         # Inserir no banco de dados
@@ -136,6 +145,9 @@ def salvar_anuncio():
             # Criar registros de publicação para cada plataforma
             publicacoes = []
             for plataforma in plataformas_info:
+                # Usar preço personalizado se existir, senão usar o preço padrão da plataforma
+                preco_plataforma = precos_plataformas.get(plataforma['slug'], plataforma.get('preco_30dias', 0))
+                
                 publicacao = {
                     'anuncio_id': resultado.inserted_id,
                     'plataforma_id': plataforma['_id'],
@@ -143,19 +155,20 @@ def salvar_anuncio():
                     'plataforma_slug': plataforma['slug'],
                     'status': 'pendente',
                     'data_criacao': datetime.now(),
-                    'preco': plataforma.get('preco_30dias', 0),
+                    'preco': preco_plataforma,
                     'expiracao': datetime.now() + timedelta(days=30)
                 }
                 publicacoes.append(publicacao)
             
             # Inserir as publicações no banco de dados se houver
             if publicacoes:
-                mongo.db.publicacoes.insert_many(publicacoes)
+                resultado_publicacoes = mongo.db.publicacoes.insert_many(publicacoes)
                 
                 # Atualizar o anúncio com a referência às publicações
+                publicacoes_ids = resultado_publicacoes.inserted_ids  # Isso já é uma lista de ObjectId
                 mongo.db.anuncios.update_one(
                     {'_id': resultado.inserted_id},
-                    {'$set': {'publicacoes_ids': [p['_id'] for p in publicacoes]}}
+                    {'$set': {'publicacoes_ids': publicacoes_ids}}
                 )
         
         # Retornar sucesso com o ID do anúncio criado
@@ -164,11 +177,13 @@ def salvar_anuncio():
             'mensagem': 'Anúncio salvo com sucesso!',
             'anuncio_id': str(resultado.inserted_id),
             'status': anuncio['status'],
-            'plataformas': plataformas_selecionadas
+            'plataformas': plataformas_selecionadas,
+            'precos': precos_plataformas
         })
         
     except Exception as e:
         # Retornar erro
+        print(e)
         return jsonify({
             'sucesso': False,
             'mensagem': f'Erro ao salvar anúncio: {str(e)}'
@@ -252,6 +267,14 @@ def atualizar_anuncio(anuncio_id):
             except:
                 plataformas_selecionadas = []
         
+        # Processar preços personalizados das plataformas
+        precos_plataformas = {}
+        if 'precos_plataformas' in dados:
+            try:
+                precos_plataformas = json.loads(dados.pop('precos_plataformas'))
+            except:
+                precos_plataformas = {}
+        
         # Verificar se há novas imagens enviadas
         novas_imagens = []
         if 'novas_imagens' in request.files:
@@ -300,6 +323,7 @@ def atualizar_anuncio(anuncio_id):
             'informacoes_adicionais': dados.get('informacoes_adicionais', ''),
             'opcionais': opcionais,
             'plataformas_selecionadas': plataformas_selecionadas,
+            'precos_plataformas': precos_plataformas,  # Salvar os preços personalizados
             'data_atualizacao': datetime.now()
         }
         
@@ -332,6 +356,9 @@ def atualizar_anuncio(anuncio_id):
                 
                 novas_publicacoes = []
                 for plataforma in plataformas_info:
+                    # Usar preço personalizado se existir, senão usar o preço padrão da plataforma
+                    preco_plataforma = precos_plataformas.get(plataforma['slug'], plataforma.get('preco_30dias', 0))
+                    
                     publicacao = {
                         'anuncio_id': ObjectId(anuncio_id),
                         'plataforma_id': plataforma['_id'],
@@ -339,7 +366,7 @@ def atualizar_anuncio(anuncio_id):
                         'plataforma_slug': plataforma['slug'],
                         'status': 'pendente',
                         'data_criacao': datetime.now(),
-                        'preco': plataforma.get('preco_30dias', 0),
+                        'preco': preco_plataforma,
                         'expiracao': datetime.now() + timedelta(days=30)
                     }
                     novas_publicacoes.append(publicacao)
@@ -358,13 +385,27 @@ def atualizar_anuncio(anuncio_id):
                         {'_id': ObjectId(anuncio_id)},
                         {'$set': {'publicacoes_ids': todas_publicacoes}}
                     )
+            
+            # Atualizar preços das plataformas existentes (que não foram adicionadas ou removidas)
+            plataformas_mantidas = [p for p in plataformas_selecionadas if p in plataformas_anteriores]
+            for plataforma_slug in plataformas_mantidas:
+                if plataforma_slug in precos_plataformas:
+                    preco_plataforma = precos_plataformas.get(plataforma_slug, 0)
+                    mongo.db.publicacoes.update_many(
+                        {
+                            'anuncio_id': ObjectId(anuncio_id),
+                            'plataforma_slug': plataforma_slug
+                        },
+                        {'$set': {'preco': preco_plataforma}}
+                    )
         
         if resultado.modified_count > 0:
             return jsonify({
                 'sucesso': True,
                 'mensagem': 'Anúncio atualizado com sucesso!',
                 'anuncio_id': anuncio_id,
-                'plataformas': plataformas_selecionadas
+                'plataformas': plataformas_selecionadas,
+                'precos': precos_plataformas
             })
         else:
             return jsonify({

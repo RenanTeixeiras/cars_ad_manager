@@ -236,22 +236,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // ================ FUNÇÃO PARA CALCULAR TOTAL DE PLATAFORMAS ================
     // Função para calcular o total das plataformas selecionadas
     function calcularTotalPlataformas() {
+        // Lista de plataformas com seus IDs
         const plataformas = [
-            { id: 'webmotors', preco: 89.90 },
-            { id: 'socarrao', preco: 69.90 },
-            { id: 'olx', preco: 59.90 },
-            { id: 'mercadolivre', preco: 79.90 },
-            { id: 'icarros', preco: 74.90 }
+            { id: 'webmotors', precoId: 'preco-webmotors' },
+            { id: 'socarrao', precoId: 'preco-socarrao' },
+            { id: 'olx', precoId: 'preco-olx' },
+            { id: 'mercadolivre', precoId: 'preco-mercadolivre' },
+            { id: 'icarros', precoId: 'preco-icarros' }
         ];
         
         let total = 0;
         const plataformasSelecionadas = [];
+        const precosPersonalizados = {};
         
         plataformas.forEach(plataforma => {
             const checkbox = document.getElementById(plataforma.id);
+            const precoInput = document.getElementById(plataforma.precoId);
+            
             if (checkbox && checkbox.checked) {
-                total += plataforma.preco;
+                const preco = precoInput ? parseFloat(precoInput.value) : 0;
+                total += preco;
+                
+                // Guardar informações da plataforma selecionada
                 plataformasSelecionadas.push(plataforma.id);
+                
+                // Guardar o preço personalizado
+                precosPersonalizados[plataforma.id] = preco;
             }
         });
         
@@ -263,7 +273,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return {
             total,
-            plataformasSelecionadas
+            plataformasSelecionadas,
+            precosPersonalizados
         };
     }
 
@@ -274,6 +285,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const checkbox = document.getElementById(id);
         if (checkbox) {
             checkbox.addEventListener('change', calcularTotalPlataformas);
+        }
+        
+        const precoInput = document.getElementById(`preco-${id}`);
+        if (precoInput) {
+            precoInput.addEventListener('input', calcularTotalPlataformas);
+            
+            // Prevenir que o click no input de preço marque/desmarque o checkbox
+            precoInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Prevenir que o enter no input de preço submeta o formulário
+            precoInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
         }
     });
     
@@ -294,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Verificar se alguma plataforma foi selecionada
-            const { plataformasSelecionadas } = calcularTotalPlataformas();
+            const { plataformasSelecionadas, precosPersonalizados } = calcularTotalPlataformas();
             
             if (plataformasSelecionadas.length === 0) {
                 alert('Por favor, selecione pelo menos uma plataforma para publicar o anúncio.');
@@ -374,6 +403,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Adicionar plataformas selecionadas como JSON string
             formData.append('plataformas', JSON.stringify(plataformasSelecionadas));
+            
+            // Adicionar preços personalizados das plataformas
+            formData.append('precos_plataformas', JSON.stringify(precosPersonalizados));
             
             // Adicionar o ID do veículo, se selecionado
             const veiculoSelect = document.getElementById('veiculo');
@@ -457,6 +489,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Obter plataformas e preços personalizados
+            const { plataformasSelecionadas, precosPersonalizados } = calcularTotalPlataformas();
+            
             // Criar FormData para enviar o formulário incluindo imagens
             const formData = new FormData();
             
@@ -501,8 +536,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('opcionais', JSON.stringify(opcionais));
             
             // Adicionar plataformas selecionadas também para o rascunho
-            const { plataformasSelecionadas } = calcularTotalPlataformas();
             formData.append('plataformas', JSON.stringify(plataformasSelecionadas));
+            
+            // Adicionar preços personalizados das plataformas
+            formData.append('precos_plataformas', JSON.stringify(precosPersonalizados));
             
             // Adicionar o ID do veículo, se selecionado
             const veiculoSelect = document.getElementById('veiculo');
@@ -575,7 +612,51 @@ document.addEventListener('DOMContentLoaded', function() {
             .form-control.invalido:focus {
                 border-color: #e74c3c !important;
             }
+            
+            /* Estilos para o campo de preço editável */
+            .preco-plataforma {
+                width: 60px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 3px 5px;
+                font-size: 0.9rem;
+                text-align: center;
+                margin: 0 5px;
+                background-color: #f9f9f9;
+                transition: all 0.3s ease;
+            }
+
+            .preco-plataforma:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                background-color: white;
+                box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+            }
+
+            /* Estilos para evitar que todo o label ative o checkbox quando clica no campo de preço */
+            .plataforma-label input[type="number"] {
+                z-index: 2;
+                position: relative;
+            }
+
+            .plataforma-label input[type="number"]:focus {
+                pointer-events: auto;
+            }
+
+            /* Melhorar visual do campo de preços nas plataformas */
+            .plataforma-preco {
+                display: flex;
+                align-items: center;
+                font-size: 0.9rem;
+                color: #666;
+            }
         `;
         document.head.appendChild(style);
     }
 });
+
+// Função auxiliar para pegar preços personalizados
+function getPrecosPersonalizados() {
+    const { precosPersonalizados } = calcularTotalPlataformas();
+    return JSON.stringify(precosPersonalizados);
+}

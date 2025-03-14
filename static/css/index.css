@@ -481,3 +481,48 @@ footer {
 .plataforma-check:checked + .plataforma-label:hover {
     background-color: rgba(52, 152, 219, 0.1);
 }
+
+/* Adicione este CSS ao arquivo static/css/index.css */
+
+/* Estilos para o campo de preço editável */
+.preco-plataforma {
+    width: 60px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 3px 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0 5px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.preco-plataforma:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+}
+
+/* Estilos para evitar que todo o label ative o checkbox quando clica no campo de preço */
+.plataforma-label input[type="number"] {
+    z-index: 2;
+    position: relative;
+}
+
+.plataforma-label input[type="number"]:focus {
+    pointer-events: auto;
+}
+
+/* Melhorar visual do campo de preços nas plataformas */
+.plataforma-preco {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Ajustes para o modal de edição */
+#edit-modal .preco-plataforma {
+    width: 70px;
+}
