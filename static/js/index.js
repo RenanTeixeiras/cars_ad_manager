@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Criar FormData para enviar o formulário incluindo imagens
             const formData = new FormData();
             
-            // Adicionar os valores dos campos ao FormData
+            // Adicionar os valores dos campos ao FormDat
             formData.append('marca', document.getElementById('marca').value);
             formData.append('modelo', document.getElementById('modelo').value);
             formData.append('ano', document.getElementById('ano').value);
@@ -283,6 +283,43 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('km', document.getElementById('km').value);
             formData.append('preco', document.getElementById('preco').value);
             formData.append('descricao', document.getElementById('descricao').value);
+            // Dentro do evento do botão publicar (publishBtn.addEventListener('click', function(e) {...})
+// Logo após onde adiciona o campo descricao ao formData
+
+// Adicionar campos da ficha técnica
+formData.append('combustivel', document.getElementById('combustivel') ? document.getElementById('combustivel').value : '');
+formData.append('cambio', document.getElementById('cambio') ? document.getElementById('cambio').value : '');
+formData.append('cor', document.getElementById('cor') ? document.getElementById('cor').value : '');
+formData.append('portas', document.getElementById('portas') ? document.getElementById('portas').value : '');
+formData.append('motor', document.getElementById('motor') ? document.getElementById('motor').value : '');
+formData.append('potencia', document.getElementById('potencia') ? document.getElementById('potencia').value : '');
+formData.append('direcao', document.getElementById('direcao') ? document.getElementById('direcao').value : '');
+formData.append('final_placa', document.getElementById('final-placa') ? document.getElementById('final-placa').value : '');
+formData.append('informacoes_adicionais', document.getElementById('informacoes-adicionais') ? document.getElementById('informacoes-adicionais').value : '');
+
+// Coletar opcionais marcados
+const opcionais = [];
+const checkboxesIds = [
+    'ar-condicionado', 'vidros-eletricos', 'travas-eletricas',
+    'alarme', 'som', 'sensor-re', 'camera-re',
+    'airbag', 'abs', 'couro', 'teto-solar', 'multimidia'
+];
+
+checkboxesIds.forEach(id => {
+    const checkbox = document.getElementById(id);
+    if (checkbox && checkbox.checked) {
+        // Converter id (ex: 'ar-condicionado') para nome legível (ex: 'Ar Condicionado')
+        const nome = id.split('-')
+                       .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                       .join(' ');
+        opcionais.push(nome);
+    }
+});
+
+// Adicionar opcionais como JSON string
+formData.append('opcionais', JSON.stringify(opcionais));
+
+// Depois, continue com o código existente...
             
             // Adicionar o ID do veículo, se selecionado
             const veiculoSelect = document.getElementById('veiculo');
