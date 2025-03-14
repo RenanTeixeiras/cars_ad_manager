@@ -63,6 +63,14 @@ def salvar_anuncio():
         # Processar a ação (publicar ou rascunho)
         acao = dados.pop('acao', 'rascunho')
         
+        # Processar opcionais (vem como JSON string)
+        opcionais = []
+        if 'opcionais' in dados:
+            try:
+                opcionais = json.loads(dados.pop('opcionais'))
+            except:
+                opcionais = []
+        
         # Verificar se há arquivos enviados (imagens)
         imagens = []
         if 'imagens' in request.files:
@@ -91,6 +99,17 @@ def salvar_anuncio():
             'km': int(dados.get('km', 0)),
             'preco': float(dados.get('preco', 0)),
             'descricao': dados.get('descricao', ''),
+            # Campos da ficha técnica
+            'combustivel': dados.get('combustivel', ''),
+            'cambio': dados.get('cambio', ''),
+            'cor': dados.get('cor', ''),
+            'portas': dados.get('portas', ''),
+            'motor': dados.get('motor', ''),
+            'potencia': dados.get('potencia', ''),
+            'direcao': dados.get('direcao', ''),
+            'final_placa': dados.get('final_placa', ''),
+            'informacoes_adicionais': dados.get('informacoes_adicionais', ''),
+            'opcionais': opcionais,
             'imagens': imagens,
             'status': 'publicado' if acao == 'publicar' else 'rascunho',
             'data_criacao': datetime.now(),
@@ -162,9 +181,6 @@ def get_anuncio(anuncio_id):
         
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
-
-
-
 @app.route('/atualizar_anuncio/<anuncio_id>', methods=['POST'])
 def atualizar_anuncio(anuncio_id):
     """API para atualizar um anúncio no banco de dados"""
@@ -179,6 +195,14 @@ def atualizar_anuncio(anuncio_id):
                 imagens_existentes = json.loads(dados.pop('imagens_existentes'))
             except:
                 imagens_existentes = []
+        
+        # Processar opcionais (vem como JSON string)
+        opcionais = []
+        if 'opcionais' in dados:
+            try:
+                opcionais = json.loads(dados.pop('opcionais'))
+            except:
+                opcionais = []
         
         # Verificar se há novas imagens enviadas
         novas_imagens = []
@@ -216,6 +240,17 @@ def atualizar_anuncio(anuncio_id):
             'preco': float(dados.get('preco', 0)),
             'descricao': dados.get('descricao', ''),
             'imagens': todas_imagens,
+            # Campos da ficha técnica
+            'combustivel': dados.get('combustivel', ''),
+            'cambio': dados.get('cambio', ''),
+            'cor': dados.get('cor', ''),
+            'portas': dados.get('portas', ''),
+            'motor': dados.get('motor', ''),
+            'potencia': dados.get('potencia', ''),
+            'direcao': dados.get('direcao', ''),
+            'final_placa': dados.get('final_placa', ''),
+            'informacoes_adicionais': dados.get('informacoes_adicionais', ''),
+            'opcionais': opcionais,
             'data_atualizacao': datetime.now()
         }
         

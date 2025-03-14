@@ -103,6 +103,155 @@
                     <textarea class="form-control" id="descricao" rows="5" placeholder="Descreva detalhes do veículo, conservação, diferenciais..."></textarea>
                 </div>
 
+                <h3 class="section-title"><i class="fas fa-clipboard-list"></i> Ficha Técnica</h3>
+    
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label for="combustivel">Combustível</label>
+                <select class="form-control" id="combustivel">
+                    <option value="">Selecione</option>
+                    <option value="Gasolina">Gasolina</option>
+                    <option value="Etanol">Etanol</option>
+                    <option value="Flex">Flex (Gasolina/Etanol)</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="GNV">GNV</option>
+                    <option value="Híbrido">Híbrido</option>
+                    <option value="Elétrico">Elétrico</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label for="cambio">Câmbio</label>
+                <select class="form-control" id="cambio">
+                    <option value="">Selecione</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Automático">Automático</option>
+                    <option value="CVT">CVT</option>
+                    <option value="Semi-automático">Semi-automático</option>
+                    <option value="Automatizado">Automatizado</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label for="cor">Cor</label>
+                <input type="text" class="form-control" id="cor" placeholder="Ex: Prata, Branco, Preto">
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label for="portas">Número de Portas</label>
+                <select class="form-control" id="portas">
+                    <option value="">Selecione</option>
+                    <option value="2">2 portas</option>
+                    <option value="3">3 portas</option>
+                    <option value="4">4 portas</option>
+                    <option value="5">5 portas</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label for="motor">Motor</label>
+                <input type="text" class="form-control" id="motor" placeholder="Ex: 1.0, 1.6, 2.0">
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label for="potencia">Potência (cv)</label>
+                <input type="number" class="form-control" id="potencia" placeholder="Ex: 116">
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label for="direcao">Direção</label>
+                <select class="form-control" id="direcao">
+                    <option value="">Selecione</option>
+                    <option value="Mecânica">Mecânica</option>
+                    <option value="Hidráulica">Hidráulica</option>
+                    <option value="Eletro-hidráulica">Eletro-hidráulica</option>
+                    <option value="Elétrica">Elétrica</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label for="final-placa">Final da Placa</label>
+                <input type="text" class="form-control" id="final-placa" maxlength="1" placeholder="Ex: 0-9">
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="opcionais">Opcionais</label>
+        <div class="opcionais-container">
+            <div class="opcional-item">
+                <input type="checkbox" id="ar-condicionado" class="opcional-check">
+                <label for="ar-condicionado">Ar Condicionado</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="vidros-eletricos" class="opcional-check">
+                <label for="vidros-eletricos">Vidros Elétricos</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="travas-eletricas" class="opcional-check">
+                <label for="travas-eletricas">Travas Elétricas</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="alarme" class="opcional-check">
+                <label for="alarme">Alarme</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="som" class="opcional-check">
+                <label for="som">Som</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="sensor-re" class="opcional-check">
+                <label for="sensor-re">Sensor de Ré</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="camera-re" class="opcional-check">
+                <label for="camera-re">Câmera de Ré</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="airbag" class="opcional-check">
+                <label for="airbag">Airbag</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="abs" class="opcional-check">
+                <label for="abs">Freios ABS</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="couro" class="opcional-check">
+                <label for="couro">Bancos em Couro</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="teto-solar" class="opcional-check">
+                <label for="teto-solar">Teto Solar</label>
+            </div>
+            <div class="opcional-item">
+                <input type="checkbox" id="multimidia" class="opcional-check">
+                <label for="multimidia">Central Multimídia</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="informacoes-adicionais">Informações Adicionais</label>
+        <textarea class="form-control" id="informacoes-adicionais" rows="3" placeholder="Outras informações técnicas ou observações..."></textarea>
+    </div>
+
                 <div class="form-group">
                     <label>Fotos do Veículo</label>
                     <div class="image-upload" id="image-upload">
@@ -132,6 +281,42 @@
 
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script>
+        // Dentro do evento de clique do botão "publicar" (publishBtn.addEventListener)
+// Adicione após formData.append('descricao', document.getElementById('descricao').value);
+
+// Adicionar campos da ficha técnica
+formData.append('combustivel', document.getElementById('combustivel').value);
+formData.append('cambio', document.getElementById('cambio').value);
+formData.append('cor', document.getElementById('cor').value);
+formData.append('portas', document.getElementById('portas').value);
+formData.append('motor', document.getElementById('motor').value);
+formData.append('potencia', document.getElementById('potencia').value);
+formData.append('direcao', document.getElementById('direcao').value);
+formData.append('final_placa', document.getElementById('final-placa').value);
+formData.append('informacoes_adicionais', document.getElementById('informacoes-adicionais').value);
+
+// Coletar opcionais marcados
+const opcionais = [];
+const checkboxesIds = [
+    'ar-condicionado', 'vidros-eletricos', 'travas-eletricas',
+    'alarme', 'som', 'sensor-re', 'camera-re',
+    'airbag', 'abs', 'couro', 'teto-solar', 'multimidia'
+];
+
+checkboxesIds.forEach(id => {
+    if (document.getElementById(id).checked) {
+        // Converter id (ex: 'ar-condicionado') para nome legível (ex: 'Ar Condicionado')
+        const nome = id.split('-')
+                       .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                       .join(' ');
+        opcionais.push(nome);
+    }
+});
+
+// Adicionar opcionais como JSON string
+formData.append('opcionais', JSON.stringify(opcionais));
+    </script>
 
 </body>
 </html>

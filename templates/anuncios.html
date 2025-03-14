@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <style>
 
+
         /* Adicione este código dentro do bloco <style> existente */
 /* Estilos para o modal */
 .modal {
@@ -277,6 +278,51 @@
         .voltar-btn i {
             margin-right: 8px;
         }
+
+        /* Estilos para a seção de ficha técnica */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    margin: 25px 0 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.opcionais-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.opcional-item {
+    display: flex;
+    align-items: center;
+}
+
+.opcional-check {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .opcionais-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .opcionais-container {
+        grid-template-columns: 1fr;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -439,6 +485,155 @@
                     <textarea class="form-control" id="edit-descricao" rows="5" placeholder="Descreva detalhes do veículo, conservação, diferenciais..."></textarea>
                 </div>
 
+                <h3 class="section-title"><i class="fas fa-clipboard-list"></i> Ficha Técnica</h3>
+    
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-combustivel">Combustível</label>
+                            <select class="form-control" id="edit-combustivel">
+                                <option value="">Selecione</option>
+                                <option value="Gasolina">Gasolina</option>
+                                <option value="Etanol">Etanol</option>
+                                <option value="Flex">Flex (Gasolina/Etanol)</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="GNV">GNV</option>
+                                <option value="Híbrido">Híbrido</option>
+                                <option value="Elétrico">Elétrico</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-cambio">Câmbio</label>
+                            <select class="form-control" id="edit-cambio">
+                                <option value="">Selecione</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Automático">Automático</option>
+                                <option value="CVT">CVT</option>
+                                <option value="Semi-automático">Semi-automático</option>
+                                <option value="Automatizado">Automatizado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-cor">Cor</label>
+                            <input type="text" class="form-control" id="edit-cor" placeholder="Ex: Prata, Branco, Preto">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-portas">Número de Portas</label>
+                            <select class="form-control" id="edit-portas">
+                                <option value="">Selecione</option>
+                                <option value="2">2 portas</option>
+                                <option value="3">3 portas</option>
+                                <option value="4">4 portas</option>
+                                <option value="5">5 portas</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-motor">Motor</label>
+                            <input type="text" class="form-control" id="edit-motor" placeholder="Ex: 1.0, 1.6, 2.0">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-potencia">Potência (cv)</label>
+                            <input type="number" class="form-control" id="edit-potencia" placeholder="Ex: 116">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-direcao">Direção</label>
+                            <select class="form-control" id="edit-direcao">
+                                <option value="">Selecione</option>
+                                <option value="Mecânica">Mecânica</option>
+                                <option value="Hidráulica">Hidráulica</option>
+                                <option value="Eletro-hidráulica">Eletro-hidráulica</option>
+                                <option value="Elétrica">Elétrica</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-final-placa">Final da Placa</label>
+                            <input type="text" class="form-control" id="edit-final-placa" maxlength="1" placeholder="Ex: 0-9">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-opcionais">Opcionais</label>
+                    <div class="opcionais-container">
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-ar-condicionado" class="opcional-check">
+                            <label for="edit-ar-condicionado">Ar Condicionado</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-vidros-eletricos" class="opcional-check">
+                            <label for="edit-vidros-eletricos">Vidros Elétricos</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-travas-eletricas" class="opcional-check">
+                            <label for="edit-travas-eletricas">Travas Elétricas</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-alarme" class="opcional-check">
+                            <label for="edit-alarme">Alarme</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-som" class="opcional-check">
+                            <label for="edit-som">Som</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-sensor-re" class="opcional-check">
+                            <label for="edit-sensor-re">Sensor de Ré</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-camera-re" class="opcional-check">
+                            <label for="edit-camera-re">Câmera de Ré</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-airbag" class="opcional-check">
+                            <label for="edit-airbag">Airbag</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-abs" class="opcional-check">
+                            <label for="edit-abs">Freios ABS</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-couro" class="opcional-check">
+                            <label for="edit-couro">Bancos em Couro</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-teto-solar" class="opcional-check">
+                            <label for="edit-teto-solar">Teto Solar</label>
+                        </div>
+                        <div class="opcional-item">
+                            <input type="checkbox" id="edit-multimidia" class="opcional-check">
+                            <label for="edit-multimidia">Central Multimídia</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-informacoes-adicionais">Informações Adicionais</label>
+                    <textarea class="form-control" id="edit-informacoes-adicionais" rows="3" placeholder="Outras informações técnicas ou observações..."></textarea>
+                </div>
+
                 <div class="form-group">
                     <label>Fotos do Veículo</label>
                     <div class="image-upload" id="edit-image-upload">
@@ -594,6 +789,44 @@
                     previewContainer.appendChild(imagePreview);
                 });
             }
+
+                // Preencher campos da ficha técnica
+    document.getElementById('edit-combustivel').value = anuncio.combustivel || '';
+    document.getElementById('edit-cambio').value = anuncio.cambio || '';
+    document.getElementById('edit-cor').value = anuncio.cor || '';
+    document.getElementById('edit-portas').value = anuncio.portas || '';
+    document.getElementById('edit-motor').value = anuncio.motor || '';
+    document.getElementById('edit-potencia').value = anuncio.potencia || '';
+    document.getElementById('edit-direcao').value = anuncio.direcao || '';
+    document.getElementById('edit-final-placa').value = anuncio.final_placa || '';
+    document.getElementById('edit-informacoes-adicionais').value = anuncio.informacoes_adicionais || '';
+    
+    // Preencher opcionais (checkboxes)
+    const opcionais = anuncio.opcionais || [];
+    
+    // Lista de todos os IDs dos opcionais
+    const checkboxesIds = [
+        'edit-ar-condicionado', 'edit-vidros-eletricos', 'edit-travas-eletricas',
+        'edit-alarme', 'edit-som', 'edit-sensor-re', 'edit-camera-re',
+        'edit-airbag', 'edit-abs', 'edit-couro', 'edit-teto-solar', 'edit-multimidia'
+    ];
+    
+    // Resetar todos os checkboxes
+    checkboxesIds.forEach(id => {
+        document.getElementById(id).checked = false;
+    });
+    
+    // Marcar os checkboxes correspondentes aos opcionais do anúncio
+    opcionais.forEach(opcional => {
+        const checkboxId = `edit-${opcional.toLowerCase().replace(/\s+/g, '-')}`;
+        const checkbox = document.getElementById(checkboxId);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
+
+
+
         }
     
         // Função para salvar as alterações do anúncio
@@ -633,6 +866,39 @@
             formData.append('preco', document.getElementById('edit-preco').value);
             formData.append('descricao', document.getElementById('edit-descricao').value);
             
+            // Adicionar campos da ficha técnica ao FormData
+    formData.append('combustivel', document.getElementById('edit-combustivel').value);
+    formData.append('cambio', document.getElementById('edit-cambio').value);
+    formData.append('cor', document.getElementById('edit-cor').value);
+    formData.append('portas', document.getElementById('edit-portas').value);
+    formData.append('motor', document.getElementById('edit-motor').value);
+    formData.append('potencia', document.getElementById('edit-potencia').value);
+    formData.append('direcao', document.getElementById('edit-direcao').value);
+    formData.append('final_placa', document.getElementById('edit-final-placa').value);
+    formData.append('informacoes_adicionais', document.getElementById('edit-informacoes-adicionais').value);
+    
+    // Coletar opcionais marcados
+    const opcionais = [];
+    const checkboxesIds = [
+        'edit-ar-condicionado', 'edit-vidros-eletricos', 'edit-travas-eletricas',
+        'edit-alarme', 'edit-som', 'edit-sensor-re', 'edit-camera-re',
+        'edit-airbag', 'edit-abs', 'edit-couro', 'edit-teto-solar', 'edit-multimidia'
+    ];
+    
+    checkboxesIds.forEach(id => {
+        if (document.getElementById(id).checked) {
+            // Converter id (ex: 'edit-ar-condicionado') para nome legível (ex: 'Ar Condicionado')
+            const nome = id.replace('edit-', '')
+                           .split('-')
+                           .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                           .join(' ');
+            opcionais.push(nome);
+        }
+    });
+    
+    // Adicionar opcionais como JSON string
+    formData.append('opcionais', JSON.stringify(opcionais));
+
             // Adicionar as imagens existentes
             formData.append('imagens_existentes', JSON.stringify(currentImages));
             
@@ -677,6 +943,11 @@
                 alert('Não foi possível atualizar o anúncio. Verifique o console para mais detalhes.');
                 document.getElementById('loading-overlay').style.display = 'none';
             });
+
+            
+            
+
+            
         }
     
         // Função para publicar anúncio

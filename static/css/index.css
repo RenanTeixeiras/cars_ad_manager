@@ -321,3 +321,48 @@ footer {
         margin: 0 10px;
     }
 }
+
+/* Estilos para a seção de ficha técnica */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    margin: 25px 0 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.opcionais-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.opcional-item {
+    display: flex;
+    align-items: center;
+}
+
+.opcional-check {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .opcionais-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .opcionais-container {
+        grid-template-columns: 1fr;
+    }
+}
+
