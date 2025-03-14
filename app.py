@@ -142,6 +142,108 @@ def listar_anuncios():
     # Caso contrário, renderizar uma página simples
     return render_template('anuncios.html', anuncios=anuncios, status_filtro=status)
 
+@app.route('/anuncio/<anuncio_id>')
+def get_anuncio(anuncio_id):
+    """API para obter detalhes de um anúncio específico"""
+    try:
+        # Buscar o anúncio no banco de dados usando o ObjectId
+        anuncio = mongo.db.anuncios.find_one({'_id': ObjectId(anuncio_id)})
+        
+        if not anuncio:
+            return jsonify({'erro': 'Anúncio não encontrado'}), 404
+            
+        # Converter ObjectId para string para serialização JSON
+        anuncio['_id'] = str(anuncio['_id'])
+        if anuncio.get('veiculo_id'):
+            anuncio['veiculo_id'] = str(anuncio['veiculo_id'])
+        
+        # Retornar os dados do anúncio
+        return jsonify(anuncio)
+        
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+
+
+
+@app.route('/atualizar_anuncio/<anuncio_id>', methods=['POST'])
+def atualizar_anuncio(anuncio_id):
+    """API para atualizar um anúncio no banco de dados"""
+    try:
+        # Obter dados do formulário
+        dados = request.form.to_dict()
+        
+        # Processar imagens existentes
+        imagens_existentes = []
+        if 'imagens_existentes' in dados:
+            try:
+                imagens_existentes = json.loads(dados.pop('imagens_existentes'))
+            except:
+                imagens_existentes = []
+        
+        # Verificar se há novas imagens enviadas
+        novas_imagens = []
+        if 'novas_imagens' in request.files:
+            arquivos = request.files.getlist('novas_imagens')
+            for arquivo in arquivos:
+                if arquivo and arquivo.filename:
+                    nome_arquivo = secure_filename(arquivo.filename)
+                    
+                    # Gerar um nome único para evitar conflitos
+                    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                    nome_unico = f"{timestamp}_{nome_arquivo}"
+                    
+                    # Salvar o arquivo
+                    caminho_completo = os.path.join(UPLOAD_FOLDER, nome_unico)
+                    arquivo.save(caminho_completo)
+                    
+                    # Adicionar o caminho relativo à lista de imagens
+                    novas_imagens.append(f"/static/uploads/{nome_unico}")
+        
+        # Combinar imagens existentes e novas
+        todas_imagens = imagens_existentes + novas_imagens
+        
+        # Remover o ID do dicionário de dados, se presente
+        if '_id' in dados:
+            dados.pop('_id')
+        
+        # Criar o documento de atualização
+        atualizacao = {
+            'marca': dados.get('marca', ''),
+            'modelo': dados.get('modelo', ''),
+            'ano': int(dados.get('ano', 0)),
+            'versao': dados.get('versao', ''),
+            'km': int(dados.get('km', 0)),
+            'preco': float(dados.get('preco', 0)),
+            'descricao': dados.get('descricao', ''),
+            'imagens': todas_imagens,
+            'data_atualizacao': datetime.now()
+        }
+        
+        # Atualizar no banco de dados
+        resultado = mongo.db.anuncios.update_one(
+            {'_id': ObjectId(anuncio_id)},
+            {'$set': atualizacao}
+        )
+        
+        if resultado.modified_count > 0:
+            return jsonify({
+                'sucesso': True,
+                'mensagem': 'Anúncio atualizado com sucesso!',
+                'anuncio_id': anuncio_id
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'mensagem': 'Nenhuma alteração foi feita ao anúncio.'
+            })
+        
+    except Exception as e:
+        # Retornar erro
+        return jsonify({
+            'sucesso': False,
+            'mensagem': f'Erro ao atualizar anúncio: {str(e)}'
+        }), 500
+
 
 # Iniciar aplicação
 if __name__ == '__main__':

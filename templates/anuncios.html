@@ -7,6 +7,127 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <style>
+
+        /* Adicione este código dentro do bloco <style> existente */
+/* Estilos para o modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 50px auto;
+    max-width: 800px;
+    width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    display: flex;
+    align-items: center;
+}
+
+.modal-header h2 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.close-modal {
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--accent-color);
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Estilo para o botão de cancelar */
+#cancelar-edicao {
+    background-color: #f5f5f5;
+    color: var(--text-color);
+}
+
+#cancelar-edicao:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilo para a mensagem de loading */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 
         .anuncios-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -243,6 +364,105 @@
         {% endif %}
     </div>
 
+
+    <!-- Adicione este código antes do fechamento da tag </body> em templates/anuncios.html -->
+<!-- Modal para edição de anúncios -->
+<div id="modal-editar" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Editar Anúncio</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="edit-form" enctype="multipart/form-data">
+                <input type="hidden" id="edit-id">
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-marca">Marca</label>
+                            <select class="form-control" id="edit-marca" required>
+                                <option value="">Selecione a marca</option>
+                                <option value="chevrolet">Chevrolet</option>
+                                <option value="fiat">Fiat</option>
+                                <option value="ford">Ford</option>
+                                <option value="honda">Honda</option>
+                                <option value="hyundai">Hyundai</option>
+                                <option value="toyota">Toyota</option>
+                                <option value="volkswagen">Volkswagen</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-modelo">Modelo</label>
+                            <select class="form-control" id="edit-modelo" required>
+                                <option value="">Selecione o modelo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-ano">Ano</label>
+                            <input type="number" class="form-control" id="edit-ano" min="1900" max="2025" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-versao">Versão</label>
+                            <input type="text" class="form-control" id="edit-versao" placeholder="Ex: LX 1.8 Automático">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-km">Quilometragem</label>
+                            <input type="number" class="form-control" id="edit-km" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="edit-preco">Preço (R$)</label>
+                            <input type="number" class="form-control" id="edit-preco" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-descricao">Descrição</label>
+                    <textarea class="form-control" id="edit-descricao" rows="5" placeholder="Descreva detalhes do veículo, conservação, diferenciais..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Fotos do Veículo</label>
+                    <div class="image-upload" id="edit-image-upload">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Arraste e solte ou clique para adicionar fotos</p>
+                        <input type="file" id="edit-file-input" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div class="preview-container" id="edit-preview-container"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="cancelar-edicao">Cancelar</button>
+                    <button type="button" class="btn btn-accent" id="salvar-edicao">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay de carregamento -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+
     <footer>
         <p>&copy; 2025 AutoPublish - Todos os direitos reservados</p>
     </footer>
@@ -269,6 +489,345 @@
                 alert(`Excluir anúncio com ID: ${id}`);
             }
         }
+    </script>
+    <script>
+        // Variáveis globais para o modal
+        let currentAnuncioId = null;
+        let currentImages = [];
+    
+        // Função para abrir o modal de edição
+        function editarAnuncio(id) {
+            console.log(`Editando anúncio com ID: ${id}`);
+            currentAnuncioId = id;
+            
+            // Mostrar o loading
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            // Fazer requisição para obter os dados do anúncio
+            fetch(`/anuncio/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro ao buscar anúncio: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados do anúncio:', data);
+                    preencherFormularioEdicao(data);
+                    
+                    // Esconder o loading e mostrar o modal
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    document.getElementById('modal-editar').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Erro ao obter dados do anúncio:', error);
+                    alert('Não foi possível carregar os dados do anúncio.');
+                    document.getElementById('loading-overlay').style.display = 'none';
+                });
+        }
+    
+        // Função para preencher o formulário de edição com os dados do anúncio
+        function preencherFormularioEdicao(anuncio) {
+            // Preencher os campos do formulário
+            document.getElementById('edit-id').value = anuncio._id;
+            
+            // Preencher a marca e disparar o evento change para carregar os modelos
+            const marcaSelect = document.getElementById('edit-marca');
+            marcaSelect.value = anuncio.marca.toLowerCase();
+            marcaSelect.dispatchEvent(new Event('change'));
+            
+            // Timeout para dar tempo dos modelos serem carregados
+            setTimeout(() => {
+                // Preencher o modelo
+                const modeloSelect = document.getElementById('edit-modelo');
+                modeloSelect.value = anuncio.modelo.toLowerCase();
+                
+                // Se o modelo não existir nas opções, adicionar
+                if (modeloSelect.value !== anuncio.modelo.toLowerCase()) {
+                    const option = document.createElement('option');
+                    option.value = anuncio.modelo.toLowerCase();
+                    option.text = anuncio.modelo;
+                    modeloSelect.appendChild(option);
+                    modeloSelect.value = anuncio.modelo.toLowerCase();
+                }
+            }, 300);
+            
+            // Preencher os outros campos
+            document.getElementById('edit-ano').value = anuncio.ano || '';
+            document.getElementById('edit-versao').value = anuncio.versao || '';
+            document.getElementById('edit-km').value = anuncio.km || 0;
+            document.getElementById('edit-preco').value = anuncio.preco || 0;
+            document.getElementById('edit-descricao').value = anuncio.descricao || '';
+            
+            // Armazenar as imagens atuais
+            currentImages = anuncio.imagens || [];
+            
+            // Limpar o preview de imagens
+            const previewContainer = document.getElementById('edit-preview-container');
+            previewContainer.innerHTML = '';
+            
+            // Adicionar as imagens existentes ao preview
+            if (currentImages.length > 0) {
+                currentImages.forEach((imagemUrl, index) => {
+                    const imagePreview = document.createElement('div');
+                    imagePreview.className = 'image-preview';
+                    imagePreview.dataset.index = index;
+                    
+                    const img = document.createElement('img');
+                    img.src = imagemUrl;
+                    
+                    const deleteButton = document.createElement('div');
+                    deleteButton.className = 'delete-image';
+                    deleteButton.innerHTML = '<i class="fas fa-times"></i>';
+                    
+                    deleteButton.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        // Remover a imagem do array
+                        currentImages.splice(index, 1);
+                        // Remover o preview
+                        imagePreview.remove();
+                    });
+                    
+                    imagePreview.appendChild(img);
+                    imagePreview.appendChild(deleteButton);
+                    previewContainer.appendChild(imagePreview);
+                });
+            }
+        }
+    
+        // Função para salvar as alterações do anúncio
+        function salvarEdicao() {
+            // Verificar campos obrigatórios
+            const camposObrigatorios = ['edit-marca', 'edit-modelo', 'edit-ano', 'edit-km', 'edit-preco'];
+            let formValido = true;
+            
+            camposObrigatorios.forEach(campo => {
+                const elemento = document.getElementById(campo);
+                if (!elemento.value.trim()) {
+                    elemento.classList.add('invalido');
+                    formValido = false;
+                } else {
+                    elemento.classList.remove('invalido');
+                }
+            });
+            
+            if (!formValido) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            // Mostrar o loading
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            // Criar FormData para enviar os dados
+            const formData = new FormData();
+            
+            // Adicionar os campos do formulário
+            formData.append('_id', document.getElementById('edit-id').value);
+            formData.append('marca', document.getElementById('edit-marca').value);
+            formData.append('modelo', document.getElementById('edit-modelo').value);
+            formData.append('ano', document.getElementById('edit-ano').value);
+            formData.append('versao', document.getElementById('edit-versao').value);
+            formData.append('km', document.getElementById('edit-km').value);
+            formData.append('preco', document.getElementById('edit-preco').value);
+            formData.append('descricao', document.getElementById('edit-descricao').value);
+            
+            // Adicionar as imagens existentes
+            formData.append('imagens_existentes', JSON.stringify(currentImages));
+            
+            // Adicionar novas imagens, se houver
+            const fileInput = document.getElementById('edit-file-input');
+            if (fileInput.files.length > 0) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    formData.append('novas_imagens', fileInput.files[i]);
+                }
+            }
+            
+            // Enviar os dados para o servidor
+            fetch(`/atualizar_anuncio/${currentAnuncioId}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro na requisição: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Resposta do servidor:', data);
+                
+                if (data.sucesso) {
+                    // Fechar o modal
+                    document.getElementById('modal-editar').style.display = 'none';
+                    
+                    // Mostrar mensagem de sucesso
+                    alert('Anúncio atualizado com sucesso!');
+                    
+                    // Recarregar a página para mostrar as mudanças
+                    window.location.reload();
+                } else {
+                    alert(data.mensagem || 'Ocorreu um erro ao atualizar o anúncio.');
+                    document.getElementById('loading-overlay').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar anúncio:', error);
+                alert('Não foi possível atualizar o anúncio. Verifique o console para mais detalhes.');
+                document.getElementById('loading-overlay').style.display = 'none';
+            });
+        }
+    
+        // Função para publicar anúncio
+        function publicarAnuncio(id) {
+            if (confirm('Deseja realmente publicar este anúncio?')) {
+                // Implemente a lógica para publicar o anúncio
+                console.log(`Publicar anúncio com ID: ${id}`);
+                // Adicione o código para a requisição ao backend aqui
+            }
+        }
+        
+        // Função para despublicar anúncio
+        function despublicarAnuncio(id) {
+            if (confirm('Deseja realmente despublicar este anúncio?')) {
+                // Implemente a lógica para despublicar o anúncio
+                console.log(`Despublicar anúncio com ID: ${id}`);
+                // Adicione o código para a requisição ao backend aqui
+            }
+        }
+        
+        // Função para excluir anúncio
+        function excluirAnuncio(id) {
+            if (confirm('Tem certeza que deseja excluir este anúncio?')) {
+                // Implemente a lógica para excluir o anúncio
+                console.log(`Excluir anúncio com ID: ${id}`);
+                // Adicione o código para a requisição ao backend aqui
+            }
+        }
+    
+        // Inicialização quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado - inicializando scripts de edição');
+            
+            // Configurar evento para fechar o modal
+            const closeModal = document.querySelector('.close-modal');
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    document.getElementById('modal-editar').style.display = 'none';
+                });
+            }
+            
+            // Fechar o modal ao clicar fora dele
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('modal-editar');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Configurar botão de cancelar
+            const cancelarBtn = document.getElementById('cancelar-edicao');
+            if (cancelarBtn) {
+                cancelarBtn.addEventListener('click', function() {
+                    document.getElementById('modal-editar').style.display = 'none';
+                });
+            }
+            
+            // Configurar botão de salvar
+            const salvarBtn = document.getElementById('salvar-edicao');
+            if (salvarBtn) {
+                salvarBtn.addEventListener('click', salvarEdicao);
+            }
+            
+            // Configurar upload de imagens
+            const imageUpload = document.getElementById('edit-image-upload');
+            const fileInput = document.getElementById('edit-file-input');
+            
+            if (imageUpload && fileInput) {
+                imageUpload.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', function() {
+                    const files = this.files;
+                    const previewContainer = document.getElementById('edit-preview-container');
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        
+                        if (!file.type.match('image.*')) {
+                            continue;
+                        }
+                        
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            const imagePreview = document.createElement('div');
+                            imagePreview.className = 'image-preview';
+                            
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            
+                            const deleteButton = document.createElement('div');
+                            deleteButton.className = 'delete-image';
+                            deleteButton.innerHTML = '<i class="fas fa-times"></i>';
+                            
+                            deleteButton.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                imagePreview.remove();
+                            });
+                            
+                            imagePreview.appendChild(img);
+                            imagePreview.appendChild(deleteButton);
+                            previewContainer.appendChild(imagePreview);
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Configurar evento de mudança de marca para carregar modelos
+            const marcaSelect = document.getElementById('edit-marca');
+            if (marcaSelect) {
+                marcaSelect.addEventListener('change', function() {
+                    const marca = this.value;
+                    console.log("Marca selecionada:", marca);
+                    
+                    const modeloSelect = document.getElementById('edit-modelo');
+                    if (!modeloSelect) {
+                        console.error("Select de modelo não encontrado!");
+                        return;
+                    }
+                    
+                    // Limpar opções existentes
+                    modeloSelect.innerHTML = '<option value="">Selecione o modelo</option>';
+                    
+                    if (!marca) return;
+                    
+                    // Adicionar modelos com base na marca selecionada
+                    const modelosPorMarca = {
+                        chevrolet: ['Onix', 'Cruze', 'S10', 'Tracker', 'Prisma', 'Camaro'],
+                        fiat: ['Uno', 'Palio', 'Toro', 'Strada', 'Argo', 'Cronos', 'Mobi'],
+                        ford: ['Ka', 'Fiesta', 'Focus', 'Ranger', 'EcoSport', 'Edge'],
+                        honda: ['Civic', 'City', 'Fit', 'HR-V', 'WR-V', 'CR-V'],
+                        hyundai: ['HB20', 'Creta', 'Tucson', 'i30', 'Santa Fe'],
+                        toyota: ['Corolla', 'Yaris', 'Hilux', 'RAV4', 'SW4', 'Etios'],
+                        volkswagen: ['Gol', 'Polo', 'Golf', 'T-Cross', 'Voyage', 'Virtus', 'Jetta']
+                    };
+                    
+                    const modelos = modelosPorMarca[marca] || [];
+                    console.log("Carregando modelos para a marca:", modelos);
+                    
+                    modelos.forEach(modelo => {
+                        const option = document.createElement('option');
+                        option.value = modelo.toLowerCase();
+                        option.text = modelo;
+                        modeloSelect.appendChild(option);
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
