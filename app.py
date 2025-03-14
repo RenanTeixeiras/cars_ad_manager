@@ -52,7 +52,10 @@ def get_veiculo(veiculo_id):
         
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
-    
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date_format):
+    from datetime import datetime
+    return datetime.now().strftime(date_format.replace('hoje às ', ''))
 @app.route('/salvar_anuncio', methods=['POST'])
 def salvar_anuncio():
     """API para salvar um anúncio no banco de dados"""

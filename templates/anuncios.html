@@ -577,6 +577,100 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <!-- Adicione esta seção após a div.anuncio-plataformas no arquivo templates/anuncios.html -->
+<div class="anuncio-metricas">
+    <h4 class="metricas-titulo">Desempenho do Anúncio</h4>
+    <div class="metricas-container">
+        <div class="metrica-item">
+            <div class="metrica-icone metrica-visualizacoes">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="metrica-info">
+                <span class="metrica-valor">{{ range(80, 450)|random }}</span>
+                <span class="metrica-label">Visualizações</span>
+            </div>
+        </div>
+        
+        <div class="metrica-item">
+            <div class="metrica-icone metrica-leads">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="metrica-info">
+                <span class="metrica-valor">{{ range(5, 40)|random }}</span>
+                <span class="metrica-label">Leads</span>
+            </div>
+        </div>
+        
+        <div class="metrica-item">
+            <div class="metrica-icone metrica-cliques">
+                <i class="fas fa-mouse-pointer"></i>
+            </div>
+            <div class="metrica-info">
+                <span class="metrica-valor">{{ range(20, 120)|random }}</span>
+                <span class="metrica-label">Cliques</span>
+            </div>
+        </div>
+        
+        <div class="metrica-item">
+            <div class="metrica-icone metrica-contatos">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div class="metrica-info">
+                <span class="metrica-valor">{{ range(3, 25)|random }}</span>
+                <span class="metrica-label">Contatos</span>
+            </div>
+        </div>
+        
+        <div class="metrica-item">
+            <div class="metrica-icone metrica-conversao">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="metrica-info">
+                <span class="metrica-valor">{{ "%.1f"|format(range(30, 150)|random / 10) }}%</span>
+                <span class="metrica-label">Taxa de Conversão</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="metricas-plataformas-titulo">Desempenho por Plataforma</div>
+    <div class="metricas-plataformas">
+        {% if anuncio.plataformas_selecionadas and anuncio.plataformas_selecionadas|length > 0 %}
+            {% for plataforma in anuncio.plataformas_selecionadas %}
+                <div class="metrica-plataforma">
+                    <div class="metrica-plataforma-header">
+                        <span class="metrica-plataforma-nome">{{ plataforma|capitalize }}</span>
+                        <span class="metrica-plataforma-status metrica-status-ativo">Ativo</span>
+                    </div>
+                    <div class="metrica-plataforma-stats">
+                        <div class="metrica-plataforma-stat">
+                            <span class="stat-label">Visualizações</span>
+                            <span class="stat-valor">{{ range(40, 200)|random }}</span>
+                        </div>
+                        <div class="metrica-plataforma-stat">
+                            <span class="stat-label">Leads</span>
+                            <span class="stat-valor">{{ range(2, 15)|random }}</span>
+                        </div>
+                        <div class="metrica-plataforma-stat">
+                            <span class="stat-label">CTR</span>
+                            <span class="stat-valor">{{ "%.1f"|format(range(40, 150)|random / 10) }}%</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="sem-metricas-plataformas">
+                <i class="fas fa-info-circle"></i> Sem dados de plataformas disponíveis
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="metricas-footer">
+        <button class="btn-relatorio">
+            <i class="fas fa-file-download"></i> Exportar Relatório
+        </button>
+        <span class="metricas-atualizado">Atualizado em: {{ "hoje às %H:%M"|strftime }}</span>
+    </div>
+</div>
                             
                             <div class="anuncio-acoes">
                                 <a href="#" class="anuncio-acao" onclick="editarAnuncio('{{ anuncio._id }}')">
@@ -900,7 +994,252 @@
 
 <!-- Adicione este CSS ao seu bloco de estilo -->
 <style>
+/* Adicione estes estilos CSS ao bloco <style> no arquivo templates/anuncios.html */
 
+/* Estilos para a seção de métricas do anúncio */
+.anuncio-metricas {
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.metricas-titulo {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.metricas-titulo::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background-color: var(--primary-color);
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+.metricas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.metrica-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 6px;
+    padding: 8px 12px;
+    flex: 1;
+    min-width: 120px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.metrica-item:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+}
+
+.metrica-icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: white;
+}
+
+.metrica-visualizacoes {
+    background-color: #3498db;
+}
+
+.metrica-leads {
+    background-color: #2ecc71;
+}
+
+.metrica-cliques {
+    background-color: #9b59b6;
+}
+
+.metrica-contatos {
+    background-color: #e67e22;
+}
+
+.metrica-conversao {
+    background-color: #34495e;
+}
+
+.metrica-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metrica-valor {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.metrica-label {
+    font-size: 0.75rem;
+    color: #777;
+}
+
+/* Estilos para métricas por plataforma */
+.metricas-plataformas-titulo {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    margin: 15px 0 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.metricas-plataformas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metrica-plataforma {
+    background-color: white;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.3s ease;
+}
+
+.metrica-plataforma:hover {
+    transform: translateY(-2px);
+}
+
+.metrica-plataforma-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.metrica-plataforma-nome {
+    font-weight: 600;
+    color: #444;
+}
+
+.metrica-plataforma-status {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.metrica-status-ativo {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: #27ae60;
+}
+
+.metrica-status-inativo {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #c0392b;
+}
+
+.metrica-plataforma-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.metrica-plataforma-stat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #777;
+}
+
+.stat-valor {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.sem-metricas-plataformas {
+    color: #999;
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: 10px;
+    text-align: center;
+}
+
+.metricas-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.btn-relatorio {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-relatorio:hover {
+    background-color: var(--secondary-color);
+}
+
+.metricas-atualizado {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .metricas-container {
+        flex-direction: column;
+    }
+    
+    .metrica-plataforma-stats {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .metrica-plataforma-stat {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .metricas-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
 .plataforma-badge {
     background-color: #f9f9f9;
     border-radius: 20px;
