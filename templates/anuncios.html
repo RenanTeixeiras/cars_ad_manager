@@ -309,7 +309,8 @@
         {% if anuncios %}
             <div class="anuncios-container">
                 {% for anuncio in anuncios %}
-                    <div class="anuncio-card">
+                <div class="anuncio-card" data-anuncio-id="{{ anuncio._id }}">
+
                         {% if anuncio.imagens and anuncio.imagens|length > 0 %}
                             <div class="anuncio-imagem">
                                 <img src="{{ anuncio.imagens[0] }}" alt="{{ anuncio.marca }} {{ anuncio.modelo }}">
@@ -698,12 +699,59 @@
         
         // Função para excluir anúncio
         function excluirAnuncio(id) {
-            if (confirm('Tem certeza que deseja excluir este anúncio?')) {
-                // Implemente a lógica para excluir o anúncio
-                console.log(`Excluir anúncio com ID: ${id}`);
-                // Adicione o código para a requisição ao backend aqui
-            }
+    if (confirm('Tem certeza que deseja excluir este anúncio?')) {
+        console.log(`Excluindo anúncio com ID: ${id}`);
+        
+        // Mostrar o loading se existir
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
         }
+        
+        // Fazer a requisição para excluir o anúncio
+        fetch(`/excluir_anuncio/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Resposta do servidor:', data);
+            
+            if (data.sucesso) {
+                alert('Anúncio excluído com sucesso!');
+                
+                // Remover o card do anúncio da página
+                const anuncioCard = document.querySelector(`[data-anuncio-id="${id}"]`);
+                if (anuncioCard) {
+                    anuncioCard.remove();
+                } else {
+                    // Se não conseguir encontrar o card, recarregar a página
+                    window.location.reload();
+                }
+            } else {
+                alert(data.mensagem || 'Ocorreu um erro ao excluir o anúncio.');
+            }
+            
+            // Esconder o loading se existir
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao excluir anúncio:', error);
+            alert('Não foi possível excluir o anúncio. Verifique o console para mais detalhes.');
+            
+            // Esconder o loading se existir
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        });
+    }
+}
     
         // Inicialização quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', function() {

@@ -244,6 +244,43 @@ def atualizar_anuncio(anuncio_id):
             'mensagem': f'Erro ao atualizar anúncio: {str(e)}'
         }), 500
 
+@app.route('/excluir_anuncio/<anuncio_id>', methods=['DELETE'])
+def excluir_anuncio(anuncio_id):
+    """API para excluir um anúncio do banco de dados"""
+    try:
+        # Buscar o anúncio para obter informações das imagens
+        anuncio = mongo.db.anuncios.find_one({'_id': ObjectId(anuncio_id)})
+        
+        if not anuncio:
+            return jsonify({
+                'sucesso': False,
+                'mensagem': 'Anúncio não encontrado'
+            }), 404
+        
+        # Excluir o anúncio do banco de dados
+        resultado = mongo.db.anuncios.delete_one({'_id': ObjectId(anuncio_id)})
+        
+        if resultado.deleted_count > 0:
+            # Opcional: remover arquivos de imagem do servidor
+            # Se você quiser remover as imagens do servidor quando o anúncio for excluído
+            # Você pode implementar essa lógica aqui
+            
+            return jsonify({
+                'sucesso': True,
+                'mensagem': 'Anúncio excluído com sucesso!'
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'mensagem': 'Não foi possível excluir o anúncio'
+            })
+        
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'mensagem': f'Erro ao excluir anúncio: {str(e)}'
+        }), 500
+
 
 # Iniciar aplicação
 if __name__ == '__main__':
