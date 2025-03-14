@@ -564,8 +564,8 @@
                                     <div class="plataformas-badges">
                                         {% for plataforma in anuncio.plataformas_selecionadas %}
                                             <div class="plataforma-badge plataforma-badge-{{ plataforma }}">
-                                                <!-- <img src="/static/images/logos/{{ plataforma }}.png" alt="{{ plataforma }}" class="plataforma-badge-logo"> -->
                                                 <span class="plataforma-badge-name">{{ plataforma|capitalize }}</span>
+                                    
                                             </div>
                                         {% endfor %}
                                     </div>
@@ -841,63 +841,45 @@
                 <!-- Adicionar esta seção ao modal-editar em templates/anuncios.html -->
 <!-- Inserir antes do grupo de formulário das imagens -->
 
+<!-- Substitua a parte do plataformas-container no modal de edição por este código -->
+
 <div class="form-group">
     <h3 class="section-title"><i class="fas fa-share-alt"></i> Plataformas de Anúncio</h3>
     <p class="plataformas-descricao">Selecione as plataformas onde deseja publicar seu anúncio:</p>
     
-    <div class="plataformas-container">
-        <div class="plataforma-item">
+    <div class="plataformas-logos-container">
+        <div class="plataforma-logo-item">
             <input type="checkbox" id="edit-webmotors" class="plataforma-check edit-plataforma">
-            <label for="edit-webmotors" class="plataforma-label">
-                <img src="/static/images/logos/webmotors.png" alt="Webmotors" class="plataforma-logo">
-                <div class="plataforma-info">
-                    <span class="plataforma-nome">Webmotors</span>
-                    <span class="plataforma-preco">R$ 89,90 / 30 dias</span>
-                </div>
+            <label for="edit-webmotors" class="plataforma-logo-label">
+                <img src="/static/images/logos/webmotors.png" alt="Webmotors" class="plataforma-logo-image">
             </label>
         </div>
         
-        <div class="plataforma-item">
+        <div class="plataforma-logo-item">
             <input type="checkbox" id="edit-socarrao" class="plataforma-check edit-plataforma">
-            <label for="edit-socarrao" class="plataforma-label">
-                <img src="/static/images/logos/socarrao.png" alt="Só Carrão" class="plataforma-logo">
-                <div class="plataforma-info">
-                    <span class="plataforma-nome">Só Carrão</span>
-                    <span class="plataforma-preco">R$ 69,90 / 30 dias</span>
-                </div>
+            <label for="edit-socarrao" class="plataforma-logo-label">
+                <img src="/static/images/logos/socarrao.png" alt="Só Carrão" class="plataforma-logo-image">
             </label>
         </div>
         
-        <div class="plataforma-item">
+        <div class="plataforma-logo-item">
             <input type="checkbox" id="edit-olx" class="plataforma-check edit-plataforma">
-            <label for="edit-olx" class="plataforma-label">
-                <img src="/static/images/logos/olx.png" alt="OLX" class="plataforma-logo">
-                <div class="plataforma-info">
-                    <span class="plataforma-nome">OLX</span>
-                    <span class="plataforma-preco">R$ 59,90 / 30 dias</span>
-                </div>
+            <label for="edit-olx" class="plataforma-logo-label">
+                <img src="/static/images/logos/olx.png" alt="OLX" class="plataforma-logo-image">
             </label>
         </div>
         
-        <div class="plataforma-item">
+        <div class="plataforma-logo-item">
             <input type="checkbox" id="edit-mercadolivre" class="plataforma-check edit-plataforma">
-            <label for="edit-mercadolivre" class="plataforma-label">
-                <img src="/static/images/logos/mercadolivre.png" alt="Mercado Livre" class="plataforma-logo">
-                <div class="plataforma-info">
-                    <span class="plataforma-nome">Mercado Livre</span>
-                    <span class="plataforma-preco">R$ 79,90 / 30 dias</span>
-                </div>
+            <label for="edit-mercadolivre" class="plataforma-logo-label">
+                <img src="/static/images/logos/mercadolivre.png" alt="Mercado Livre" class="plataforma-logo-image">
             </label>
         </div>
         
-        <div class="plataforma-item">
+        <div class="plataforma-logo-item">
             <input type="checkbox" id="edit-icarros" class="plataforma-check edit-plataforma">
-            <label for="edit-icarros" class="plataforma-label">
-                <img src="/static/images/logos/icarros.png" alt="iCarros" class="plataforma-logo">
-                <div class="plataforma-info">
-                    <span class="plataforma-nome">iCarros</span>
-                    <span class="plataforma-preco">R$ 74,90 / 30 dias</span>
-                </div>
+            <label for="edit-icarros" class="plataforma-logo-label">
+                <img src="/static/images/logos/icarros.png" alt="iCarros" class="plataforma-logo-image">
             </label>
         </div>
     </div>
@@ -913,6 +895,78 @@
         </div>
     </div>
 </div>
+
+<!-- Adicione este CSS ao seu bloco de estilo -->
+<style>
+.plataformas-logos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 15px 0;
+    justify-content: center;
+}
+
+.plataforma-logo-item {
+    position: relative;
+}
+
+.plataforma-check {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.plataforma-logo-label {
+    display: block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.plataforma-logo-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: grayscale(70%);
+    opacity: 0.6;
+    border-radius: 50%;
+    padding: 10px;
+    background-color: #f8f8f8;
+}
+
+.plataforma-check:checked + .plataforma-logo-label .plataforma-logo-image {
+    filter: grayscale(0%);
+    opacity: 1;
+    background-color: rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+    transform: scale(1.05);
+}
+
+.plataforma-logo-label:hover .plataforma-logo-image {
+    filter: grayscale(30%);
+    opacity: 0.9;
+    transform: translateY(-5px);
+}
+
+.plataforma-check:checked + .plataforma-logo-label::after {
+    content: '✓';
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: #3498db;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+</style>
 
                 <div class="modal-footer">
                     <button type="button" class="btn" id="cancelar-edicao">Cancelar</button>
